@@ -1,0 +1,33 @@
+<script type="text/javascript" src="/depender/build?require=URLDispacher/URLDispacher"></script>
+<script type="text/javascript">
+(function(){
+
+	function EventHandler(){};
+
+	EventHandler.implement({
+
+		params: {
+			keyword: {
+				type: Type.isString,
+				regexp: '(\\w+)'
+			},
+			page: {
+				type: Type.isNumber,
+				regexp: '(\\d+)'
+			}
+		},
+
+		invoke: function(context){
+		}
+
+	});
+
+	window.addEventListener('load', function(){
+
+		var dispacher = new URLDispacher();
+		dispacher.register('/:keyword/:page', new EventHandler());
+
+	}, false);
+
+}());
+</script>
