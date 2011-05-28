@@ -1,41 +1,75 @@
-<script type="text/javascript" src="/depender/build?require=URLDispacher/URLDispacher"></script>
+<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher"></script>
 <script type="text/javascript">
-(function(){
+(function(doc){
 
-	function EventHandler(){};
+	var sourceViewer = null;
+
+	function EventHandler(){
+		this._sources = [];
+	};
 
 	EventHandler.implement({
 
-		params: {
-			keyword: {
-				type: Type.isString,
-				regexp: '(\\w+)'
-			},
-			page: {
-				type: Type.isNumber,
-				regexp: '(\\d+)'
+		_toString: function(context){
+			var source = context.url;
+			if (context.params){
+				source += ', ' + context.params.join(', ');
 			}
+			if (context.values){
+				source += ', ';
+				Object.each(context.values, function(value, key){
+					source += key + ':' + value + ' ';
+				});
+			}
+			return source;
 		},
 
-		preDipatch: function(context){
+		preDispatch: function(context){
+			this._sources.push('preDispatch = ' + this._toString(context));
 		},
-
 		invoke: function(context){
+			this._sources.push('invoke = ' + this._toString(context));
 		},
-
-		postDipatch: function(context){
+		postDispatch: function(context){
+			this._sources.push('postDispatch = ' + this._toString(context));
+			sourceViewer.innerHTML = this._sources.join('\n');
 		}
-
 	});
+
+	var dispatcher = new URLDispatcher();
+	dispatcher.register('^/mootools/(\\w+)/', new EventHandler());
+	dispatcher.register('^/keyword/(\\w+)/(\\d*|\\d+/)', new EventHandler());
 
 	window.addEventListener('load', function(){
 
-		var dispacher = new URLDispacher();
-		dispacher.register('/:keyword/:page', new EventHandler());
+		var dispatchHandler = function(event){
+			event.preventDefault();
+			var attrs = {
+				id: this.getAttribute('id'),
+				title: this.getAttribute('title')
+			};
+			dispatcher.dispatch(this.getAttribute('href'), attrs);
+		};
 
+		sourceViewer = doc.getElementById('source');
+		var paturn1 = doc.getElementById('paturn1');
+		var paturn2 = doc.getElementById('paturn2');
+		var paturn3 = doc.getElementById('paturn3');
+		var paturn4 = doc.getElementById('paturn4');
 
+		paturn1.addEventListener('click', dispatchHandler, false);
+		paturn2.addEventListener('click', dispatchHandler, false);
+		paturn3.addEventListener('click', dispatchHandler, false);
+		paturn4.addEventListener('click', dispatchHandler, false);
 
 	}, false);
 
-}());
+}(document));
 </script>
+<ul id="dispathcer">
+	<li><a id="paturn1" title="paturn1" href="/mootools/core/">http://mootools.net/mootools/core/</a></li>
+	<li><a id="paturn2" title="paturn2" href="/mootools/more/">http://mootools.net/mootools/more/</a></li>
+	<li><a id="paturn3" title="paturn3" href="/keyword/mootools/">http://mootools.net/keyword/mootools/</a></li>
+	<li><a id="paturn4" title="paturn4" href="/keyword/mootools/1">http://mootools.net/keyword/mootools/1</a></li>
+</ul>
+<p id="source"></p>
