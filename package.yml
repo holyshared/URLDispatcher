@@ -1,26 +1,26 @@
-name: Plugin Name
+name: URLDispacher
 
-web: "[http://url_to_plugin](label)"
+web: "[URLDispacher](http://holyshared.github.com/URLDispacher URLDispacher)"
 
-description:
+description: ""
 
-authors: "${TM_FULLNAME}"
+authors: "[Noritaka Horio](http://sharedhat.com)"
 
-license: "MIT License"
+license: "[MIT License](http://holyshared.github.com/URLDispacher/license.txt)"
 
-copyright: "&copy; ${TM_FULLNAME}"
+copyright: "&copy; [Noritaka Horio](http://sharedhat.com)"
 
 sources:
-  - "Source/Plugin.js"
+  - "Source/URLDispacher.js"
 
-author: ${TM_FULLNAME}
+author: Noritaka Horio
 
-category: Interface
+category: Utilities
 
-tags: [tag1, tag2]
+tags: [utils, dispacher, url]
 
-current: version
+current: 1.0
 
-docs: http://url_to_plugin_docs
+#docs: http://holyshared.github.com/Mixin/docs
 
-demo: http://url_to_plugin_demo
+demo: http://holyshared.github.com/URLDispacher/
