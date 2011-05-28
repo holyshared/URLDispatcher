@@ -1,6 +1,6 @@
-name: URLDispacher
+name: URLDispatcher
 
-web: "[URLDispacher](http://holyshared.github.com/URLDispacher URLDispacher)"
+web: "[URLDispatcher](http://holyshared.github.com/URLDispatcher URLDispatcher)"
 
 description: ""
 
@@ -11,16 +11,16 @@ license: "[MIT License](http://holyshared.github.com/URLDispacher/license.txt)"
 copyright: "&copy; [Noritaka Horio](http://sharedhat.com)"
 
 sources:
-  - "Source/URLDispacher.js"
+  - "Source/URLDispatcher.js"
 
 author: Noritaka Horio
 
 category: Utilities
 
-tags: [utils, dispacher, url]
+tags: [utils, dispatcher, url]
 
 current: 1.0
 
-#docs: http://holyshared.github.com/Mixin/docs
+#docs: http://holyshared.github.com/URLDispacher/docs
 
-demo: http://holyshared.github.com/URLDispacher/
+demo: http://holyshared.github.com/URLDispatcher/

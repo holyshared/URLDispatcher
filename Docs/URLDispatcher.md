@@ -1,19 +1,19 @@
-URLDispacher
+URLDispatcher
 =======================================
 
 
 
-## URLDispacher
+## URLDispatcher
 
-	var dispacher = new URLDispacher();
-	dispacher.register('/foo/bar', function(context){
+	var dispatcher = new URLDispatcher();
+	dispatcher.register('/foo/bar', function(context){
 		//do something
 	});
 
 	or
 
-	var dispacher = new URLDispacher();
-	dispacher.register('/foo/bar', {
+	var dispatcher = new URLDispatcher();
+	dispatcher.register('/foo/bar', {
 
 		preDispach: function(context){
 			//do something
