@@ -14,31 +14,46 @@ App.EventHandler = function(){};
 App.EventHandler.implement({
 
 	preDispatch: function(context){
+		this._renderTitle('preDispatch', context);
+		this._renderContent(context);
 	},
 
 	invoke: function(context){
+		this._renderTitle('invoke', context);
+		this._renderContent(context);
+	},
+
+	postDispatch: function(context){
+		this._renderTitle('postDispatch', context);
+		this._renderContent(context);
+	},
+
+	_renderTitle: function(title, context){
+		var values = context.values;
+		var content = values.content;
+		content.appendChild(Builder.h2(title));
+	}.protect(),
+
+	_renderContent: function(context){
 
 		var params = context.params;
 		var values = context.values;
 		var content = values.content;
 
-		content.appendChild(Builder.h2('url'));
+		content.appendChild(Builder.h3('url'));
 		content.appendChild(Builder.p(context.url));
 
 		if (Type.isArray(params)){
-			content.appendChild(Builder.h2('params'));
+			content.appendChild(Builder.h3('params'));
 			content.appendChild(buildUlList(params));
 		}
 
 		if (values){
-			content.appendChild(Builder.h2('values'));
+			content.appendChild(Builder.h3('values'));
 			content.appendChild(buildDlList(values));
 		}
 
-	},
-
-	postDispatch: function(context){
-	}
+	}.protect()
 
 });
 

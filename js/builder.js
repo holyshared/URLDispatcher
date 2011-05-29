@@ -2,7 +2,7 @@
 
 	var Builder = this.Builder = {};
 
-	var elements = ['h1', 'h2', 'p', 'dl', 'dt', 'dd', 'ul', 'li'];
+	var elements = ['h1', 'h2', 'h3', 'h4', 'p', 'dl', 'dt', 'dd', 'ul', 'li'];
 	for (var i = 0; i < elements.length; i++){
 		var key = elements[i];
 		Builder[key] = build(key);
