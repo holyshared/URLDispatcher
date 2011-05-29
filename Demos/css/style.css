@@ -1,5 +1,44 @@
 @charset "utf-8";
 
 body {
-	font:13px/1.231 arial,helvetica,clean,sans-serif;
+	font:13px/1.231 "Trebuchet MS",arial,helvetica,clean,sans-serif;
+}
+
+nav { font-size: 108%; display: block; }
+
+nav ul {
+	overflow: hidden;
+	margin: 0px;
+	padding: 0px;
+}
+
+nav ul li {
+	float: left;
+	list-style: none;
+	margin-right: 5px;
+}
+
+nav ul li a {
+	color: #ffffff;
+	display: inline-block;
+	background: #436494;
+	padding: 5px 10px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	text-decoration: none;
+}
+
+nav ul li a:hover {
+	background: #ddbd00;
+}
+
+h1 { font-size: 231%; font-weight: normal; }
+
+
+
+
+.page {
+	margin: 0px auto;
+	width: 980px;
 }

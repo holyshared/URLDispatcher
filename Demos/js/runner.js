@@ -13,12 +13,26 @@ var Observer = {
 };
 
 var dispatcher = new URLDispatcher();
-dispatcher.register('http://holyshared.github.com/URLDispatcher/', function(context){
-});
+dispatcher.register('^/URLDispatcher/$', Application.RootHandler);
+dispatcher.register('^/URLDispatcher/handler/(\\w+)', new Application.EventHandler());
 
 Observer.register(window, 'load', function(){
 
-	dispatcher.dispatch(window.location.url);
+	var content = document.getElementById('content');
+
+	var location = window.location;
+	var prefix = location.protocol + '//' + location.host
+	var url = location.href.replace(prefix, '');
+
+console.log(location);
+console.log(url);
+
+	var context = {
+		content: content,
+		observer: Observer
+	};
+
+	dispatcher.dispatch(url, context);
 
 });
 
