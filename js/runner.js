@@ -24,9 +24,6 @@ Observer.register(window, 'load', function(){
 	var prefix = location.protocol + '//' + location.host
 	var url = location.href.replace(prefix, '');
 
-console.log(location);
-console.log(url);
-
 	var context = {
 		content: content,
 		observer: Observer
