@@ -4,7 +4,7 @@ URLDispatcher
 This library is an event dispatcher with a light URL base.  
 The size of the file is 2KB very lighter.
 
-![URLDispatcher](url_to_image1 "URLDispatcher")
+![URLDispatcher](http://holyshared.github.com/URLDispatcher/icon.png "URLDispatcher")
 
 How to use
 ------------------------------------------------------------------------
