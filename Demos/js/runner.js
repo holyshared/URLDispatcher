@@ -1,6 +1,7 @@
 (function(){
 
 var Observer = {
+
 	register: function(target, type, callback){
 		if (target.addEventListener){
 			target.addEventListener(type, callback, false);
@@ -8,6 +9,7 @@ var Observer = {
 			target.attachEvent('on' + type, callback);
 		}
 	}
+
 };
 
 var dispatcher = new URLDispatcher();
