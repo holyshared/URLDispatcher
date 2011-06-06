@@ -2,7 +2,7 @@ name: URLDispatcher
 
 web: "[URLDispatcher](http://holyshared.github.com/URLDispatcher URLDispatcher)"
 
-description: ""
+description: "Event dispatcher of simple url base."
 
 authors: "[Noritaka Horio](http://sharedhat.com)"
 
@@ -19,7 +19,7 @@ category: Utilities
 
 tags: [utils, dispatcher, url]
 
-current: 1.0
+current: 2.0
 
 #docs: http://holyshared.github.com/URLDispacher/docs
 
