@@ -1,0 +1,57 @@
+<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher.Route"></script>
+<script type="text/javascript">
+(function(doc){
+
+	window.addEventListener('load', function(){
+
+		try {
+			var route = new URLDispatcher.Route();
+			console.log('assert ng');
+		} catch(e) {
+			console.log('assert ok');
+		}
+
+		var route = new URLDispatcher.Route({ paturn: '^/:name' });
+		route.setPaturn('^/:value');
+		if (route.getPaturn() == '^/:value') {
+			console.log('assert ok');
+		} else {
+			console.log('assert ng');
+		}
+
+		var maps = ['\\w+'];
+		route.setConditions(maps);
+		if (route.getConditions() == maps) {
+			console.log('assert ok');
+		} else {
+			console.log('assert ng');
+		}
+
+		var res = route.match('/foo');
+		if (res) {
+			console.log('assert ok');
+		} else {
+			console.log('assert ng');
+		}
+
+		var res = route.match('/1000');
+		if (res) {
+			console.log('assert ok');
+		} else {
+			console.log('assert ng');
+		}
+
+		var res = route.assemble({
+			value: 'default'
+		});
+
+		if (res == '/default') {
+			console.log('assert ok');
+		} else {
+			console.log('assert ng');
+		}
+
+	}, false);
+
+}(document));
+</script>

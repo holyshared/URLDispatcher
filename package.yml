@@ -12,6 +12,9 @@ copyright: "&copy; [Noritaka Horio](http://sharedhat.com)"
 
 sources:
   - "Source/URLDispatcher.js"
+  - "Source/URLDispatcher.Route.js"
+  - "Source/URLDispatcher.Router.js"
+  - "Source/URLDispatcher.Dispatcher.js"
 
 author: Noritaka Horio
 
