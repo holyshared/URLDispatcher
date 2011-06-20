@@ -60,6 +60,10 @@ URLDispatcher.Router
 * addRoutes (object) - 
 * removeRoute (string) - 
 * removeRoutes (object) - 
+* hasRoute (string) - 
+* getRoute (string) - 
+* getRoutes - 
+* getLength - 
 
 
 URLDispatcher.Route

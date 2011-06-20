@@ -45,7 +45,10 @@ dispatcher.Route = new Class({
 		var index = 0;
 		paths.each(function(value, key){
 			if (value.charAt(0) == ':'){
-				paths[key] = '(' + conds[index++] + ')';
+				if (!conds[index++]) {
+					throw new Error('The corresponding pattern is not found.');
+				}
+				paths[key] = '(' + conds[index] + ')';
 			}
 		});
 		var re = new RegExp(paths.join('/'));
@@ -76,12 +79,15 @@ dispatcher.Route = new Class({
 
 	assemble: function(values){
 		var paturn = this.getPaturn();
-		for (var key in values) {
-			var re = new RegExp(':' + key);
-			if (!re.test(paturn)) {
-				throw new Error(key + ' is not found from the URL pattern.');
+		var re = new RegExp(':[a-zA-Z]+\/?');
+		if (re.test(paturn) && values) {
+			for (var key in values) {
+				var re = new RegExp(':' + key);
+				if (!re.test(paturn)) {
+					throw new Error(key + ' is not found from the URL pattern.');
+				}
+				paturn = paturn.replace(':' + key, values[key]);
 			}
-			paturn = paturn.replace(':' + key, values[key]);
 		}
 		if (paturn.charAt(0) == '^') {
 			paturn = paturn.replace('^', '')
