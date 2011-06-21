@@ -1,0 +1,47 @@
+<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher.Dispatcher,URLDispatcher/URLDispatcher.Handler"></script>
+<script type="text/javascript">
+(function(doc){
+
+	window.addEventListener('load', function(){
+
+		var options = {
+			paturn: '^/:name',
+			conditions: ['\\w+']
+		};
+		var route = new URLDispatcher.Route(options);
+
+		var h1 = new URLDispatcher.Handler(function(){
+			var name = this.getParam('name');
+			if (name == 'foo'){
+				log('assert ok');
+			} else {
+				log('assert ng');
+			}
+		});
+
+		var h2 = new URLDispatcher.Handler(function(){
+			var key = this.getParam('key');
+			var type = this.getParam('type');
+			if (key == 'foo'){
+				log('assert ok');
+			} else {
+				log('assert ng');
+			}
+			if (type == 'moo'){
+				log('assert ok');
+			} else {
+				log('assert ng');
+			}
+		});
+
+
+		var dispatcher = new URLDispatcher();
+		dispatcher.register('^/:name', h1, ['\\w+']);
+		dispatcher.register('^/:key/:type', h2, ['\\w+', '\\w+']);
+		dispatcher.dispatch('/foo');
+		dispatcher.dispatch('/foo/moo');
+
+	}, false);
+
+}(document));
+</script>

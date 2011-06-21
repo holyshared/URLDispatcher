@@ -30,13 +30,14 @@ dispatcher.Router = new Class({
 	},
 
 	match: function(url){
+		var result = false;
 		Object.each(this._routes, function(route){
-			var result = route.match(url);
-			if (result){
-				return result;
+			var params = route.match(url);
+			if (params){
+				result = params;
 			}
-		})
-		return false;
+		});
+		return result;
 	},
 
 	hasRoute: function(paturn){

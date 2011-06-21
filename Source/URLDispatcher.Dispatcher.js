@@ -10,12 +10,11 @@ authors:
 - Noritaka Horio
 
 requires:
-  - Core/Type
-  - Core/Function
-  - Core/Class
   - URLDispatcher/URLDispatcher
+  - URLDispatcher/URLDispatcher.Router
+  - URLDispatcher/URLDispatcher.HandlerManager
 
-provides: [URLDispatcher.Dispathcer]
+provides: [URLDispatcher.Dispatcher]
 
 ...
 */
@@ -23,37 +22,41 @@ provides: [URLDispatcher.Dispathcer]
 
 dispatcher.Dispatcher = new Class({
 
-	_handlers: {},
-
 	initialize: function(){
-		this.router = new dispatcher.Router();
+		this._router = new dispatcher.Router();
+		this._handlers = new dispatcher.HandlerManager();
 	},
 
 	register: function(paturn, handler, conditions){
-		this._addHandler(paturn, handler);
-		this.router.addRoute(paturn, conditions);
+		this._router.addRoute(paturn, conditions);
+		this._handlers.addHandler(paturn, handler);
+	},
+
+	unregister: function(paturn){
+		this._router.removeRoute(paturn);
+		this._handlers.removeHandler(paturn);
 	},
 
 	dispatch: function(url, args){
-		var result = this.router.match(url);
+		var result = this._router.match(url);
 		if (!result) {
 			return false;
 		}
 		var key = result.paturn;
-		var handler = this._getHandler(key);
+		var handler = this._handlers.getHandler(key);
 
+		var context = Object.merge(result, { args : args || {} }); 
 
+		handler.setContext(context);
 
-	},
+		handler.preDispatch();
+		handler.execute();
+		handler.postDispatch();
 
-	_addHandler: function(paturn, handler){
-		this._handlers[paturn] = handler;
-	}.protect(),
-
-	_getHandler: function(paturn){
-		return this._handlers[paturn];
-	}.protect()
+	}
 
 });
+
+dispatcher.implement(new dispatcher.Dispatcher());
 
 }(URLDispatcher));

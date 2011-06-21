@@ -29,7 +29,7 @@ function setupEventHandler(eventHandler){
 	if (name == 'object' && Type.isFunction(eventHandler.execute)) {
 		handler = eventHandler;
 	} else if (name == 'function') {
-		handler = { execute: handler };
+		handler = { execute: eventHandler };
 	} else {
 		throw new TypeError('Please specify the function or the object for the event handler.');
 	}
@@ -38,15 +38,45 @@ function setupEventHandler(eventHandler){
 
 dispatcher.Handler = new Class({
 
+	_context: null,
+
 	initialize: function(eventHandler){
 		return setupEventHandler.apply(this, [eventHandler]);
 	},
 
-	preDispatch: function(context){},
+	setContext: function(context){
+		this._context = context;
+	},
 
-	execute: function(context){},
+	getContext: function(){
+		return this._context;
+	},
 
-	postDispatch: function(context){}
+	getArg: function(name){
+		var args = this.getArgs();
+		return args[name] || null;
+	},
+
+	getArgs: function(){
+		var context = this.getContext();
+		return context.args;
+	},
+
+	getParam: function(name){
+		var params = this.getParams();
+		return params[name] || null;
+	},
+
+	getParams: function(){
+		var context = this.getContext();
+		return context.params;
+	},
+
+	preDispatch: function(){},
+
+	execute: function(){},
+
+	postDispatch: function(){}
 
 });
 
