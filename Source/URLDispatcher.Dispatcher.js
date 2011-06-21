@@ -11,7 +11,7 @@ authors:
 
 requires:
   - Core/Type
-  - Core/String
+  - Core/Function
   - Core/Class
   - URLDispatcher/URLDispatcher
 
@@ -20,7 +20,6 @@ provides: [URLDispatcher.Dispathcer]
 ...
 */
 (function(dispatcher){
-
 
 dispatcher.Dispatcher = new Class({
 
@@ -35,12 +34,14 @@ dispatcher.Dispatcher = new Class({
 		this.router.addRoute(paturn, conditions);
 	},
 
-	dispatch: function(url, context){
+	dispatch: function(url, args){
 		var result = this.router.match(url);
 		if (!result) {
 			return false;
 		}
-		var handler = this._getHandler(paturn);
+		var key = result.paturn;
+		var handler = this._getHandler(key);
+
 
 
 	},

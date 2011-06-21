@@ -48,6 +48,8 @@ dispatcher.Route = new Class({
 
 		var result = {
 			url: targetUrl,
+			paturn: this.getPaturn(),
+			conditions: this.getConditions(),
 			params: this.getParams(values)
 		};
 		return result;
