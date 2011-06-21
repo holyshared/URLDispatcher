@@ -36,13 +36,11 @@ dispatcher.Dispatcher = new Class({
 	},
 
 	dispatch: function(url, context){
-		var paturn = this.router.match(url);
-		if (!paturn) {
+		var result = this.router.match(url);
+		if (!result) {
 			return false;
 		}
-
 		var handler = this._getHandler(paturn);
-
 
 
 	},
