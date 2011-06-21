@@ -59,6 +59,17 @@ dispatcher.HandlerManager = new Class({
 
 	hasHandler: function(key){
 		return (this._handlers[key]) ? true : false;
+	},
+
+	getHandler: function(key){
+		if (!this.hasHandler(key)) {
+			throw new Error('There is no specified event handler.');
+		}
+		return this._handlers[key];
+	},
+
+	getHandlers: function(key){
+		return this._handlers;
 	}
 
 });

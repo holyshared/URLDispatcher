@@ -88,3 +88,40 @@ URLDispatcher.Route
 * getParams
 * assemble - 
 * toRegExp
+
+
+
+
+URLDispatcher.Handler
+---------------------------------------
+
+### Methods
+
+
+
+
+
+
+URLDispatcher.HandlerManager
+---------------------------------------
+
+	var handler1 = new URLDispatcher.Handler(function(context){
+		//do something
+	});
+	var handler2 = new URLDispatcher.Handler(function(context){
+		//do something
+	});
+
+	var manager = new URLDispatcher.HandlerManager();
+	manager.addHandler('^/:name', handler1)
+		.addHandler('^/:type/:page', handler2);
+
+### Methods
+
+* addHandler (string, function|object) - 
+* addHandlers (object) - 
+* removeHandler (string) -
+* removeHandlers (object) - 
+* hasHandler (string) -
+* getHandler (string) -
+* getHandlers

@@ -10,6 +10,9 @@ authors:
 - Noritaka Horio
 
 requires:
+  - Core/Type
+  - Core/Object
+  - Core/Class
   - URLDispatcher/URLDispatcher
 
 provides: [URLDispatcher.Handler]
@@ -22,22 +25,7 @@ provides: [URLDispatcher.Handler]
 dispatcher.Handler = new Class({
 
 	initialize: function(eventHandler){
-		this._setEventHandler(eventHandler);
-	},
-
-	_setEventHandler: function(eventHandler){
-		var handler = null;
-		switch(typeOf(eventHandler)){
-			case 'object' && Type.isFunction(eventHandler.execute):
-				handler = eventHandler;
-				break;
-			case 'function':
-				handler = { execute: handler };
-				break;
-			default:
-				throw new TypeError('aaaaaa');
-		}
-		Object.merge(this, handler);
+		setupEventHandler.call(this, eventHandler);
 	},
 
 	preDispatch: function(context){},
@@ -47,6 +35,21 @@ dispatcher.Handler = new Class({
 	postDispatch: function(context){}
 
 });
+
+function setupEventHandler(eventHandler){
+	var handler = null;
+	switch(typeOf(eventHandler)){
+		case 'object' && Type.isFunction(eventHandler.execute):
+			handler = eventHandler;
+			break;
+		case 'function':
+			handler = { execute: handler };
+			break;
+		default:
+			throw new TypeError('Please specify the function or the object for the event handler.');
+	}
+	Object.merge(this, handler);
+};
 
 new Type('URLDispatcherHandler', dispatcher.Handler);
 
