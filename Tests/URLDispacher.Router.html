@@ -1,0 +1,75 @@
+<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher.Router"></script>
+<script type="text/javascript">
+(function(doc){
+
+	window.addEventListener('load', function(){
+
+		var router = new URLDispatcher.Router();
+
+		router.addRoute('^/:name', ['\\w+']);
+		router.addRoutes([
+			{
+				paturn: '^/:value',
+				conditions: ['\\w+']
+			}, {
+				paturn: '^/:type/:name',
+				conditions: ['\\w+', '\\w+']
+			}
+		]);
+
+		if (router.hasRoute('^/:name')) {
+			console.log('assert ok');
+		} else {
+			console.log('assert ng');
+		}
+
+		if (router.hasRoute('^/:value')) {
+			console.log('assert ok');
+		} else {
+			console.log('assert ng');
+		}
+
+		if (router.hasRoute('^/:type/:name')) {
+			console.log('assert ok');
+		} else {
+			console.log('assert ng');
+		}
+
+		router.removeRoute('^/:name');
+		router.removeRoutes([
+			'^/:value',
+			'^/:type/:name'
+		]);
+
+		if (router.getLength() <= 0) {
+			console.log('assert ok');
+		} else {
+			console.log('assert ng');
+		}
+
+		router.addRoutes([
+			{
+				paturn: '^/:value',
+				conditions: ['\\w+']
+			}, {
+				paturn: '^/:type/:name',
+				conditions: ['\\w+', '\\w+']
+			}
+		]);
+
+		if (router.getRoute('^/:value')) {
+			console.log('assert ok');
+		} else {
+			console.log('assert ng');
+		}
+
+		if (Object.getLength(router.getRoutes()) > 0) {
+			console.log('assert ok');
+		} else {
+			console.log('assert ng');
+		}
+
+	}, false);
+
+}(document));
+</script>
