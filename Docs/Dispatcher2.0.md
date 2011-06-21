@@ -85,4 +85,6 @@ URLDispatcher.Route
 * setPaturn (string) - 
 * getConditions - 
 * setConditions (array) - 
+* getParams
 * assemble - 
+* toRegExp

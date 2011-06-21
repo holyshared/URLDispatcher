@@ -39,20 +39,49 @@ dispatcher.Route = new Class({
 	},
 
 	match: function(url){
+		var re = this.toRegExp();
+		if (!re.test(url)) {
+			return false;
+		}
+		var values = url.match(re);
+		var targetUrl = (Type.isArray(values)) ? values.shift() : url;
+
+		var result = {
+			url: targetUrl,
+			params: this.getParams(values)
+		};
+		return result;
+	},
+
+	toRegExp: function(){
 		var paturn = this.getPaturn();
 		var conds = this.getConditions();
 		var paths = paturn.split('/');
 		var index = 0;
 		paths.each(function(value, key){
 			if (value.charAt(0) == ':'){
-				if (!conds[index++]) {
+				if (!conds[index]) {
 					throw new Error('The corresponding pattern is not found.');
 				}
 				paths[key] = '(' + conds[index] + ')';
+				index++;
 			}
 		});
-		var re = new RegExp(paths.join('/'));
-		return (re.test(url)) ? paturn : false;
+		return new RegExp(paths.join('/'));
+	},
+
+	getParams: function(values){
+		var index = 0;
+		var result = {};
+		var paturn = this.getPaturn();
+		var placeHolders = paturn.split('/');
+		placeHolders.each(function(value, key){
+			if (value.charAt(0) == ':'){
+				var storeKey = value.replace(':', '');
+				result[storeKey] = values[index++];
+			}
+		});
+		return result;
 	},
 
 	getPaturn: function(){
