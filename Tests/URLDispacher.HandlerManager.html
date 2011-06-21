@@ -1,0 +1,47 @@
+<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher.HandlerManager"></script>
+<script type="text/javascript">
+(function(doc){
+
+	window.addEventListener('load', function(){
+
+		var handler = new URLDispatcher.Handler(function(context){
+
+		});
+
+		var manager = new URLDispatcher.HandlerManager();
+		manager.addHandler('^/foo', handler)
+			.addHandler('^/bar', handler)
+			.addHandlers({
+				'^/aaa': handler,
+				'^/bbb': handler
+			});
+
+		manager.removeHandler('^/foo')
+			.removeHandler('^/bar')
+			.removeHandlers('^/aaa', '^/bbb');
+
+		if (manager.hasHandler('^/foo')) {
+			log('assert ng');
+		} else {
+			log('assert ok');
+		}
+
+		if (manager.getLength() == 0) {
+			log('assert ok');
+		} else {
+			log('assert ng');
+		}
+
+		manager.addHandler('^/foo', handler);
+
+		if (handler = manager.getHandler('^/foo')) {
+			log('assert ok');
+		} else {
+			log('assert ng');
+		}
+
+
+	}, false);
+
+}(document));
+</script>

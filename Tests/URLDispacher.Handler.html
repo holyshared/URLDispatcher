@@ -1,0 +1,40 @@
+<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher.Handler"></script>
+<script type="text/javascript">
+(function(doc){
+
+	window.addEventListener('load', function(){
+
+		try {
+			var handler = new URLDispatcher.Handler();
+			log('assert ng');
+		} catch(e) {
+			log('assert ok');
+		}
+
+		try {
+			var handler = new URLDispatcher.Handler(function(context){
+			});
+			log('assert ok');
+		} catch(e) {
+			log(e.message);
+		}
+
+		try {
+			var handler = new URLDispatcher.Handler({
+				execute: function(context){}
+			});
+			log('assert ok');
+		} catch(e) {
+			log(e.message);
+		}
+
+		if (Type.isURLDispatcherHandler(handler)) {
+			log('assert ok');
+		} else {
+			log(e.message);
+		}
+
+	}, false);
+
+}(document));
+</script>

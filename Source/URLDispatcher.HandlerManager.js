@@ -34,6 +34,7 @@ dispatcher.HandlerManager = new Class({
 			throw new TypeError('The specified event handler is not URLDispatcherHandler.');
 		}
 		this._handlers[key] = handler;
+		return this;
 	},
 
 	addHandlers: function(handlers){
@@ -41,6 +42,7 @@ dispatcher.HandlerManager = new Class({
 		Object.each(handlers, function(handler, key){
 			self.addHandler(key, handler);
 		});
+		return this;
 	},
 
 	removeHandler: function(key){
@@ -48,13 +50,16 @@ dispatcher.HandlerManager = new Class({
 			throw new Error('There is no specified event handler.');
 		}
 		delete this._handlers[key];
+		return this;
 	},
 
-	removeHandlers: function(handlers){
+	removeHandlers: function(){
+		var handlers = Array.from(arguments);
 		var self = this;
-		Object.each(handlers, function(handler, key){
+		handlers.each(function(key){
 			self.removeHandler(key);
 		});
+		return this;
 	},
 
 	hasHandler: function(key){
@@ -70,6 +75,10 @@ dispatcher.HandlerManager = new Class({
 
 	getHandlers: function(key){
 		return this._handlers;
+	},
+
+	getLength: function(){
+		return Object.getLength(this._handlers);
 	}
 
 });

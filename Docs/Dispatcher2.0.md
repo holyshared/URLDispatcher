@@ -124,4 +124,5 @@ URLDispatcher.HandlerManager
 * removeHandlers (object) - 
 * hasHandler (string) -
 * getHandler (string) -
-* getHandlers
+* getHandlers - 
+* getLength - 

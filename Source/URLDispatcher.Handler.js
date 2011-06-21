@@ -22,10 +22,24 @@ provides: [URLDispatcher.Handler]
 
 (function(dispatcher){
 
+function setupEventHandler(eventHandler){
+	var handler = null;
+	var name = typeOf(eventHandler);
+
+	if (name == 'object' && Type.isFunction(eventHandler.execute)) {
+		handler = eventHandler;
+	} else if (name == 'function') {
+		handler = { execute: handler };
+	} else {
+		throw new TypeError('Please specify the function or the object for the event handler.');
+	}
+	return Object.merge(this, handler);
+};
+
 dispatcher.Handler = new Class({
 
 	initialize: function(eventHandler){
-		setupEventHandler.call(this, eventHandler);
+		return setupEventHandler.apply(this, [eventHandler]);
 	},
 
 	preDispatch: function(context){},
@@ -35,21 +49,6 @@ dispatcher.Handler = new Class({
 	postDispatch: function(context){}
 
 });
-
-function setupEventHandler(eventHandler){
-	var handler = null;
-	switch(typeOf(eventHandler)){
-		case 'object' && Type.isFunction(eventHandler.execute):
-			handler = eventHandler;
-			break;
-		case 'function':
-			handler = { execute: handler };
-			break;
-		default:
-			throw new TypeError('Please specify the function or the object for the event handler.');
-	}
-	Object.merge(this, handler);
-};
 
 new Type('URLDispatcherHandler', dispatcher.Handler);
 
