@@ -29,9 +29,10 @@ dispatcher.URLEventDispatcher = new Class({
 	},
 
 	register: function(paturn, handler, conditions){
-		handler.setDispatcher(this);
+		var stackHandler = (!Type.isURLDispatcherHandler(handler)) ? new dispatcher.Handler(handler) : handler;
+		stackHandler.setDispatcher(this);
 		this._router.addRoute(paturn, conditions);
-		this._handlers.addHandler(paturn, handler);
+		this._handlers.addHandler(paturn, stackHandler);
 		return this;
 	},
 

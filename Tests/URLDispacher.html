@@ -1,0 +1,35 @@
+<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher,URLDispatcher/URLDispatcher.URLEventDispatcher"></script>
+<script type="text/javascript">
+(function(doc){
+
+	window.addEventListener('load', function(){
+
+		var h1 = function(){
+			var name = this.getParam('name');
+			log( (name == 'holyshared') ? 'assert ok' : 'assert ng' );
+		};
+
+		var eventHandler = function(){
+			var name = this.getParam('name');
+			var status = this.getParam('status');
+			log( (name == 'holyshared') ? 'assert ok' : 'assert ng' );
+			log( (status == 'sleep') ? 'assert ok' : 'assert ng' );
+		};
+
+		var h2 = {
+			preDispatch: eventHandler,
+			execute: eventHandler,
+			postDispatch: eventHandler
+		};
+
+		var dispatcher = new URLDispatcher();
+		dispatcher.register('^/:name', h1, ['\\w+'])
+			.register('^/:name/:status', h2, ['\\w+', '\\w+']);
+
+		dispatcher.dispatch('/holyshared', { args1: 100 });
+		dispatcher.dispatch('/holyshared/sleep', { args1: 500 });
+
+	}, false);
+
+}(document));
+</script>
