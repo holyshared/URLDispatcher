@@ -6,14 +6,18 @@
 
 		var h1 = function(){
 			var name = this.getParam('name');
+			var args1 = this.getArgs('args1');
 			log( (name == 'holyshared') ? 'assert ok' : 'assert ng' );
+			log( (args1 == 100) ? 'assert ok' : 'assert ng' );
 		};
 
 		var eventHandler = function(){
 			var name = this.getParam('name');
 			var status = this.getParam('status');
+			var args1 = this.getArgs('args1');
 			log( (name == 'holyshared') ? 'assert ok' : 'assert ng' );
 			log( (status == 'sleep') ? 'assert ok' : 'assert ng' );
+			log( (args1 == 500) ? 'assert ok' : 'assert ng' );
 		};
 
 		var h2 = {
