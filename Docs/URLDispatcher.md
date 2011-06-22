@@ -6,7 +6,7 @@ URLDispatcher
 
 
 URLDispatcher.Dispatcher
----------------------------------------
+------------------------------------------------
 
 	var dispatcher = new URLDispatcher.Dispatcher();
 	dispatcher.register('^/:name', function(context){
@@ -40,9 +40,9 @@ URLDispatcher.Dispatcher
 * dispatch (string, [object]) - 
 
 
-
 URLDispatcher.Router
----------------------------------------
+------------------------------------------------
+
 
 	var router = new URLDispatcher.Router();
 	router.addRoute('^/:name', ['\\w+']);
@@ -68,7 +68,7 @@ URLDispatcher.Router
 
 
 URLDispatcher.Route
----------------------------------------
+------------------------------------------------
 
 	var route = new URLDispatcher.Route();
 	route.setPaturn('^/:name')
@@ -91,10 +91,9 @@ URLDispatcher.Route
 * toRegExp
 
 
-
-
 URLDispatcher.Handler
----------------------------------------
+------------------------------------------------
+
 
 ### Methods
 
@@ -104,11 +103,13 @@ URLDispatcher.Handler
 * getArgs - 
 * getParam (string) - 
 * getParams - 
-
+* getDispatcher - 
+* setDispatcher (object) - 
+* redirect (url, args) - 
 
 
 URLDispatcher.HandlerManager
----------------------------------------
+------------------------------------------------
 
 	var handler1 = new URLDispatcher.Handler(function(context){
 		//do something

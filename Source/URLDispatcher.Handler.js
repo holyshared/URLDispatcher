@@ -39,6 +39,7 @@ function setupEventHandler(eventHandler){
 dispatcher.Handler = new Class({
 
 	_context: null,
+	_dispatcher: null,
 
 	initialize: function(eventHandler){
 		return setupEventHandler.apply(this, [eventHandler]);
@@ -70,6 +71,18 @@ dispatcher.Handler = new Class({
 	getParams: function(){
 		var context = this.getContext();
 		return context.params;
+	},
+
+	getDispatcher: function(){
+		return this._dispatcher;
+	},
+
+	setDispatcher: function(dispatcher){
+		this._dispatcher = dispatcher;
+	},
+
+	redirect: function(url, args){
+		this._dispatcher.dispatch(url, args);
 	},
 
 	preDispatch: function(){},
