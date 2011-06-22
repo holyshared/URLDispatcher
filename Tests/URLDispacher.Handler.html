@@ -34,6 +34,20 @@
 			log(e.message);
 		}
 
+		try {
+			handler.setContext('aa');
+			log('assert ng');
+		} catch(e){
+			log('assert ok');
+		}
+
+		try {
+			handler.setContext({ params: {}, args: {} });
+			log('assert ok');
+		} catch(e){
+			log('assert ng');
+		}
+
 	}, false);
 
 }(document));

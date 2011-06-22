@@ -16,7 +16,7 @@ sources:
   - "Source/URLDispatcher.Router.js"
   - "Source/URLDispatcher.Handler.js"
   - "Source/URLDispatcher.HandlerManager.js"
-  - "Source/URLDispatcher.Dispatcher.js"
+  - "Source/URLDispatcher.URLEventDispatcher.js"
 
 author: holyshared
 

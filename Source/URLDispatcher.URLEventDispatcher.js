@@ -1,6 +1,6 @@
 /*
 ---
-name: URLDispatcher.Dispathcer
+name: URLDispatcher.URLEventDispatcher
 
 description: 
 
@@ -12,15 +12,16 @@ authors:
 requires:
   - URLDispatcher/URLDispatcher
   - URLDispatcher/URLDispatcher.Router
+  - URLDispatcher/URLDispatcher.Handler
   - URLDispatcher/URLDispatcher.HandlerManager
 
-provides: [URLDispatcher.Dispatcher]
+provides: [URLDispatcher.URLEventDispatcher]
 
 ...
 */
 (function(dispatcher){
 
-dispatcher.Dispatcher = new Class({
+dispatcher.URLEventDispatcher = new Class({
 
 	initialize: function(){
 		this._router = new dispatcher.Router();
@@ -28,13 +29,24 @@ dispatcher.Dispatcher = new Class({
 	},
 
 	register: function(paturn, handler, conditions){
+		handler.setDispatcher(this);
 		this._router.addRoute(paturn, conditions);
 		this._handlers.addHandler(paturn, handler);
+		return this;
 	},
 
 	unregister: function(paturn){
 		this._router.removeRoute(paturn);
 		this._handlers.removeHandler(paturn);
+		return this;
+	},
+
+	isRegist: function(paturn) {
+		return this._router.hasRoute(paturn);
+	},
+
+	getLength: function() {
+		return this._router.getLength();
 	},
 
 	dispatch: function(url, args){
@@ -52,11 +64,31 @@ dispatcher.Dispatcher = new Class({
 		handler.preDispatch();
 		handler.execute();
 		handler.postDispatch();
-
 	}
 
 });
 
-dispatcher.implement(new dispatcher.Dispatcher());
+new Type('URLEventDispatcher', dispatcher.URLEventDispatcher);
+
+dispatcher.Handler.implement({
+
+	getDispatcher: function(){
+		return this._dispatcher;
+	},
+
+	setDispatcher: function(dispatcher){
+		if (!Type.isURLEventDispatcher(dispatcher)) {
+			throw new TypeError('The specified value is not URLEventDispatcher.');
+		}
+		this._dispatcher = dispatcher;
+	},
+
+	redirect: function(url, args){
+		this._dispatcher.dispatch(url, args);
+	}
+
+});
+
+dispatcher.implement(new dispatcher.URLEventDispatcher());
 
 }(URLDispatcher));

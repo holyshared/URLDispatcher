@@ -5,10 +5,10 @@ URLDispatcher
 
 
 
-URLDispatcher.Dispatcher
+URLDispatcher.URLEventDispatcher
 ------------------------------------------------
 
-	var dispatcher = new URLDispatcher.Dispatcher();
+	var dispatcher = new URLDispatcher.URLEventDispatcher();
 	dispatcher.register('^/:name', function(context){
 	}, ['\\w+']);
 	
@@ -38,11 +38,12 @@ URLDispatcher.Dispatcher
 * register (string, object, [array]) - 
 * unregister (string) - 
 * dispatch (string, [object]) - 
+* isRegist (string) - 
+* getLength - 
 
 
 URLDispatcher.Router
 ------------------------------------------------
-
 
 	var router = new URLDispatcher.Router();
 	router.addRoute('^/:name', ['\\w+']);

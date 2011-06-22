@@ -1,0 +1,64 @@
+<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher.URLEventDispatcher,URLDispatcher/URLDispatcher.Handler"></script>
+<script type="text/javascript">
+(function(doc){
+
+	window.addEventListener('load', function(){
+
+		var h = new URLDispatcher.Handler(function(){});
+
+		try {
+			h.setDispatcher('aa');
+			log('assert ng');
+		} catch(e){
+			log('assert ok');
+		}
+
+		try {
+			h.setDispatcher(new URLDispatcher.URLEventDispatcher());
+			log('assert ok');
+		} catch(e){
+			log('assert ng');
+		}
+
+		var options = {
+			paturn: '^/:name',
+			conditions: ['\\w+']
+		};
+		var route = new URLDispatcher.Route(options);
+
+		var h1 = new URLDispatcher.Handler(function(){
+			var name = this.getParam('name');
+
+			log( (name == 'foo') ? 'assert ok' : 'assert ng' ); 
+		});
+
+		var h2 = new URLDispatcher.Handler(function(){
+			var key = this.getParam('key');
+			var type = this.getParam('type');
+
+			log( (key == 'foo') ? 'assert ok' : 'assert ng' ); 
+			log( (type == 'moo') ? 'assert ok' : 'assert ng' ); 
+		});
+
+		var dispatcher = new URLDispatcher();
+		dispatcher.register('^/:name', h1, ['\\w+']);
+		dispatcher.register('^/:key/:type', h2, ['\\w+', '\\w+']);
+
+		dispatcher.dispatch('/foo');
+		dispatcher.dispatch('/foo/moo');
+
+		h2.redirect('/foo/moo', {
+			value1: 1,
+			value2: 2
+		});
+
+		dispatcher.unregister('^/:name')
+			.unregister('^/:key/:type');
+
+		log( (!dispatcher.isRegist('^/:name')) ? 'assert ok' : 'assert ng' ); 
+		log( (!dispatcher.isRegist('^/:key/:type')) ? 'assert ok' : 'assert ng' ); 
+
+	}, false);
+
+}(document));
+</script>

@@ -46,6 +46,9 @@ dispatcher.Handler = new Class({
 	},
 
 	setContext: function(context){
+		if (!Type.isObject(context)) {
+			throw new TypeError('The specified value is not object.');
+		}
 		this._context = context;
 	},
 
@@ -71,18 +74,6 @@ dispatcher.Handler = new Class({
 	getParams: function(){
 		var context = this.getContext();
 		return context.params;
-	},
-
-	getDispatcher: function(){
-		return this._dispatcher;
-	},
-
-	setDispatcher: function(dispatcher){
-		this._dispatcher = dispatcher;
-	},
-
-	redirect: function(url, args){
-		this._dispatcher.dispatch(url, args);
 	},
 
 	preDispatch: function(){},
