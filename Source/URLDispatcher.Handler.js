@@ -76,11 +76,7 @@ dispatcher.Handler = new Class({
 		return context.params;
 	},
 
-	preDispatch: function(){},
-
-	execute: function(){},
-
-	postDispatch: function(){}
+	execute: function(){}
 
 });
 

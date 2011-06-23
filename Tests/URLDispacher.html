@@ -6,18 +6,18 @@
 
 		var h1 = function(){
 			var name = this.getParam('name');
-			var args1 = this.getArgs('args1');
-			log( (name == 'holyshared') ? 'assert ok' : 'assert ng' );
-			log( (args1 == 100) ? 'assert ok' : 'assert ng' );
+			var args1 = this.getArg('args1');
+			log( (name == 'holyshared') ? 'assert ok' : 'name is invalid' );
+			log( (args1 == 100) ? 'assert ok' : 'args1 is invalid' );
 		};
 
 		var eventHandler = function(){
 			var name = this.getParam('name');
 			var status = this.getParam('status');
-			var args1 = this.getArgs('args1');
-			log( (name == 'holyshared') ? 'assert ok' : 'assert ng' );
-			log( (status == 'sleep') ? 'assert ok' : 'assert ng' );
-			log( (args1 == 500) ? 'assert ok' : 'assert ng' );
+			var args1 = this.getArg('args1');
+			log( (name == 'holyshared') ? 'assert ok' : 'name is invalid' );
+			log( (status == 'sleep') ? 'assert ok' : 'status is invalid' );
+			log( (args1 == 500) ? 'assert ok' : 'args1 is invalid' );
 		};
 
 		var h2 = {

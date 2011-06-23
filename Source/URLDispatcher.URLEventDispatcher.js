@@ -62,9 +62,15 @@ dispatcher.URLEventDispatcher = new Class({
 
 		handler.setContext(context);
 
-		handler.preDispatch();
+		if (Type.isFunction(handler.preDispatch)) {
+			handler.preDispatch();
+		}
+
 		handler.execute();
-		handler.postDispatch();
+
+		if (Type.isFunction(handler.postDispatch)) {
+			handler.postDispatch();
+		}
 	}
 
 });

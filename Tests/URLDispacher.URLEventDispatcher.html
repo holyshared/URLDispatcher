@@ -28,7 +28,6 @@
 
 		var h1 = new URLDispatcher.Handler(function(){
 			var name = this.getParam('name');
-
 			log( (name == 'foo') ? 'assert ok' : 'assert ng' ); 
 		});
 
@@ -40,12 +39,30 @@
 			log( (type == 'moo') ? 'assert ok' : 'assert ng' ); 
 		});
 
+
+		var eventHandler = function(){
+			var name = this.getParam('name');
+			var status = this.getParam('status');
+			var page = this.getParam('page');
+			log( (name == 'holyshared') ? 'assert ok' : 'assert ng' );
+			log( (status == 'sleep') ? 'assert ok' : 'assert ng' );
+			log( (page == 100) ? 'assert ok' : 'assert ng' );
+		};
+
+		var h3 = {
+			preDispatch: eventHandler,
+			execute: eventHandler,
+			postDispatch: eventHandler
+		};
+
 		var dispatcher = new URLDispatcher();
 		dispatcher.register('^/:name', h1, ['\\w+']);
 		dispatcher.register('^/:key/:type', h2, ['\\w+', '\\w+']);
+		dispatcher.register('^/:name/:status/:page', h3, ['\\w+', '\\w+', '\\d+']);
 
 		dispatcher.dispatch('/foo');
 		dispatcher.dispatch('/foo/moo');
+		dispatcher.dispatch('/holyshared/sleep/100');
 
 		h2.redirect('/foo/moo', {
 			value1: 1,
