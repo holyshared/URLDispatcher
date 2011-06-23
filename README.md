@@ -72,4 +72,8 @@ Building URLDispatcher
 
 To do the build, the following command is specified by the packager.  
 
+#### Mootools
+packager build Core/Type Core/Object  Core/String Core/Function Core/Class +use-only Core -blocks 1.2compat
+
+#### URLDispatcher
 packager build URLDispatcher/* +use-only URLDispatcher
