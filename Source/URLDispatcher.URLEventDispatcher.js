@@ -10,6 +10,8 @@ authors:
 - Noritaka Horio
 
 requires:
+  - Core/Events
+  - Core/Options
   - URLDispatcher/URLDispatcher
   - URLDispatcher/URLDispatcher.Router
   - URLDispatcher/URLDispatcher.Handler
@@ -21,7 +23,15 @@ provides: [URLDispatcher.URLEventDispatcher]
 */
 (function(dispatcher){
 
+//Result Status
+Object.append(dispatcher, {
+	SUCCESS: 0,
+	FAILURE: 1
+});
+
 dispatcher.URLEventDispatcher = new Class({
+
+	Implements: [Events, Options],
 
 	initialize: function(){
 		this._router = new dispatcher.Router();
@@ -63,14 +73,25 @@ dispatcher.URLEventDispatcher = new Class({
 		handler.setContext(context);
 
 		if (Type.isFunction(handler.preDispatch)) {
-			handler.preDispatch();
+			var result = handler.preDispatch() || dispatcher.SUCCESS;
+			if (dispatcher.FAILURE == result) {
+				return new Error('The preDispatch event processing failed. [' + url + ']');
+			}
 		}
 
-		handler.execute();
+		var result = handler.execute() || dispatcher.SUCCESS;
+		if (dispatcher.FAILURE == result) {
+			return new Error('The execute event processing failed. [' + url + ']');
+		}
 
 		if (Type.isFunction(handler.postDispatch)) {
-			handler.postDispatch();
+			var result = handler.postDispatch() || dispatcher.SUCCESS;
+			if (dispatcher.FAILURE == result) {
+				return new Error('The postDispatch event processing failed. [' + url + ']');
+			}
 		}
+
+		return dispatcher.SUCCESS;
 	}
 
 });
@@ -97,5 +118,6 @@ dispatcher.Handler.implement({
 });
 
 dispatcher.implement(new dispatcher.URLEventDispatcher());
+
 
 }(URLDispatcher));
