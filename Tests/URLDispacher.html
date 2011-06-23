@@ -27,8 +27,8 @@
 		};
 
 		var dispatcher = new URLDispatcher();
-		dispatcher.register('^/:name', h1, ['\\w+'])
-			.register('^/:name/:status', h2, ['\\w+', '\\w+']);
+		dispatcher.addRoute('^/:name', h1, ['\\w+'])
+			.addRoute('^/:name/:status', h2, ['\\w+', '\\w+']);
 
 		dispatcher.dispatch('/holyshared', { args1: 100 });
 		dispatcher.dispatch('/holyshared/sleep', { args1: 500 });

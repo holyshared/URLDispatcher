@@ -38,8 +38,9 @@ URLDispatcher.URLEventDispatcher
 * addRoute (string, object, [array]) - 
 * removeRoute (string) - 
 * dispatch (string, [object]) - 
-* isRegist (string) - 
+* hasRoute (string) - 
 * getLength - 
+
 
 
 URLDispatcher.Router

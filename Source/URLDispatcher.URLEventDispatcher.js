@@ -52,7 +52,7 @@ dispatcher.URLEventDispatcher = new Class({
 		return this;
 	},
 
-	isRegist: function(paturn) {
+	hasRoute: function(paturn) {
 		return this._router.hasRoute(paturn);
 	},
 

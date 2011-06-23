@@ -56,9 +56,9 @@
 		};
 
 		var dispatcher = new URLDispatcher();
-		dispatcher.register('^/:name', h1, ['\\w+']);
-		dispatcher.register('^/:key/:type', h2, ['\\w+', '\\w+']);
-		dispatcher.register('^/:name/:status/:page', h3, ['\\w+', '\\w+', '\\d+']);
+		dispatcher.addRoute('^/:name', h1, ['\\w+']);
+		dispatcher.addRoute('^/:key/:type', h2, ['\\w+', '\\w+']);
+		dispatcher.addRoute('^/:name/:status/:page', h3, ['\\w+', '\\w+', '\\d+']);
 
 		dispatcher.dispatch('/foo');
 		dispatcher.dispatch('/foo/moo');
@@ -69,11 +69,11 @@
 			value2: 2
 		});
 
-		dispatcher.unregister('^/:name')
-			.unregister('^/:key/:type');
+		dispatcher.removeRoute('^/:name')
+			.removeRoute('^/:key/:type');
 
-		log( (!dispatcher.isRegist('^/:name')) ? 'assert ok' : 'assert ng' ); 
-		log( (!dispatcher.isRegist('^/:key/:type')) ? 'assert ok' : 'assert ng' ); 
+		log( (!dispatcher.hasRoute('^/:name')) ? 'assert ok' : 'assert ng' ); 
+		log( (!dispatcher.hasRoute('^/:key/:type')) ? 'assert ok' : 'assert ng' ); 
 
 	}, false);
 
