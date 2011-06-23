@@ -38,7 +38,7 @@ dispatcher.URLEventDispatcher = new Class({
 		this._handlers = new dispatcher.HandlerManager();
 	},
 
-	register: function(paturn, handler, conditions){
+	addRoute: function(paturn, handler, conditions){
 		var stackHandler = (!Type.isURLDispatcherHandler(handler)) ? new dispatcher.Handler(handler) : handler;
 		stackHandler.setDispatcher(this);
 		this._router.addRoute(paturn, conditions);
@@ -46,7 +46,7 @@ dispatcher.URLEventDispatcher = new Class({
 		return this;
 	},
 
-	unregister: function(paturn){
+	removeRoute: function(paturn){
 		this._router.removeRoute(paturn);
 		this._handlers.removeHandler(paturn);
 		return this;

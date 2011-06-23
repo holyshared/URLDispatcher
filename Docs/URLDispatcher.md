@@ -9,7 +9,7 @@ URLDispatcher.URLEventDispatcher
 ------------------------------------------------
 
 	var dispatcher = new URLDispatcher.URLEventDispatcher();
-	dispatcher.register('^/:name', function(context){
+	dispatcher.addRoute('^/:name', function(context){
 	}, ['\\w+']);
 	
 	or
@@ -29,14 +29,14 @@ URLDispatcher.URLEventDispatcher
 		}
 	}
 	
-	dispatcher.register('^/:name', handler, ['\\w+']);
+	dispatcher.addRoute('^/:name', handler, ['\\w+']);
 
 ### Properties
 
 ### Methods
 
-* register (string, object, [array]) - 
-* unregister (string) - 
+* addRoute (string, object, [array]) - 
+* removeRoute (string) - 
 * dispatch (string, [object]) - 
 * isRegist (string) - 
 * getLength - 
