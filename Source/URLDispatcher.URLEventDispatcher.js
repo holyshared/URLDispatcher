@@ -13,6 +13,7 @@ requires:
   - Core/Events
   - Core/Options
   - URLDispatcher/URLDispatcher
+  - URLDispatcher/URLDispatcher.Resource
   - URLDispatcher/URLDispatcher.Router
   - URLDispatcher/URLDispatcher.Handler
   - URLDispatcher/URLDispatcher.HandlerManager
@@ -31,7 +32,7 @@ Object.append(dispatcher, {
 
 dispatcher.URLEventDispatcher = new Class({
 
-	Implements: [Events, Options],
+	Implements: [Events, Options, dispatcher.Resource],
 
 	initialize: function(){
 		this._router = new dispatcher.Router();
@@ -113,6 +114,22 @@ dispatcher.Handler.implement({
 
 	redirect: function(url, args){
 		this._dispatcher.dispatch(url, args);
+	}
+
+});
+
+dispatcher.Handler.implement({
+
+	hasResource: function(key){
+		return this.getDispatcher().hasResource(key);
+	},
+
+	getResource: function(key){
+		return this.getDispatcher().getResource(key);
+	},
+
+	getResources: function(){
+		return this.getDispatcher().getResources();
 	}
 
 });

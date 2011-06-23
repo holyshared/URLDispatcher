@@ -43,6 +43,25 @@ URLDispatcher.URLEventDispatcher
 
 
 
+URLDispatcher.Resource
+------------------------------------------------
+
+	var container = new URLDispatcher.Resource();
+	container.addResource('myResource', {
+		key1: 'value1',
+		key2: 'value2'
+	});
+
+### Methods
+
+* addResource (string, object) - 
+* addResources (object) - 
+* hasResource (string) - 
+* getResource (string) - 
+* getResources - 
+
+
+
 URLDispatcher.Router
 ------------------------------------------------
 
@@ -105,6 +124,9 @@ URLDispatcher.Handler
 * getArgs - 
 * getParam (string) - 
 * getParams - 
+* hasResource (string) - 
+* getResource (string) - 
+* getResources -
 * getDispatcher - 
 * setDispatcher (object) - 
 * redirect (url, args) - 

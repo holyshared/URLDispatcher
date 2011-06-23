@@ -50,6 +50,7 @@ dispatcher.Handler = new Class({
 			throw new TypeError('The specified value is not object.');
 		}
 		this._context = context;
+		return this;
 	},
 
 	getContext: function(){
