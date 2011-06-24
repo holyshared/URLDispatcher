@@ -1,0 +1,25 @@
+<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher.Resource"></script>
+<script type="text/javascript">
+(function(doc){
+
+	function Mock(){
+	};
+	Mock.implement(new URLDispatcher.Resource());
+
+	window.addEventListener('load', function(){
+
+		var mock = new Mock();
+		mock.addResource('foo', {
+			key: 'foo'
+		});
+
+		mock.addResources({
+			key1: 'foo',
+			key2: 'bar'
+		});
+
+
+	}, false);
+
+}(document));
+</script>

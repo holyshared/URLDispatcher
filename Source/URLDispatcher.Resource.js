@@ -12,6 +12,7 @@ authors:
 requires:
   - Core/Object
   - Core/Class
+  - URLDispatcher/URLDispatcher
 
 provides: [URLDispatcher.Resource]
 

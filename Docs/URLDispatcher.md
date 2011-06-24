@@ -11,24 +11,24 @@ URLDispatcher.URLEventDispatcher
 	var dispatcher = new URLDispatcher.URLEventDispatcher();
 	dispatcher.addRoute('^/:name', function(context){
 	}, ['\\w+']);
-	
+
 	or
-	
+
 	var handler = {
-	
+
 		preDispatch: function(context){
 			//do something
 		},
-	
+
 		execute: function(context){
 			//do something
 		},
-	
+
 		postDispatch: function(context){
 			//do something
 		}
 	}
-	
+
 	dispatcher.addRoute('^/:name', handler, ['\\w+']);
 
 ### Properties
@@ -46,8 +46,8 @@ URLDispatcher.URLEventDispatcher
 URLDispatcher.Resource
 ------------------------------------------------
 
-	var container = new URLDispatcher.Resource();
-	container.addResource('myResource', {
+	var dispatcher = new URLDispatcher();
+	dispatcher.addResource('myResource', {
 		key1: 'value1',
 		key2: 'value2'
 	});
@@ -67,7 +67,7 @@ URLDispatcher.Router
 
 	var router = new URLDispatcher.Router();
 	router.addRoute('^/:name', ['\\w+']);
-	
+
 	var route = router.match('/foo');
 	if (route){
 		alert(route); //Alert '^/:name'
