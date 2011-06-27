@@ -46,19 +46,24 @@ URLDispatcher.URLEventDispatcher
 URLDispatcher.Resource
 ------------------------------------------------
 
-	var dispatcher = new URLDispatcher();
-	dispatcher.addResource('myResource', {
+	var myResource = {
 		key1: 'value1',
 		key2: 'value2'
-	});
+	};
+
+	var dispatcher = new URLDispatcher();
+	dispatcher.addResource('myResource', myResource);
+
 
 ### Methods
 
 * addResource (string, object) - 
 * addResources (object) - 
+* removeResource (string) - 
+* removeResources (string, [string]) - 
 * hasResource (string) - 
 * getResource (string) - 
-* getResources - 
+* getResources (string, [string]) - 
 
 
 

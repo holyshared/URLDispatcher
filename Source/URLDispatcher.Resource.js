@@ -36,19 +36,33 @@ dispatcher.Resource = new Class({
 		});
 	},
 
+	removeResource: function(key){
+		if (!this.hasResource(key)) {
+			throw new Error('Resource ' + key + ' was not found.');
+		}
+		delete this._resources[key];
+		return this;
+	},
+
+	removeResources: function(){
+		Array.each(arguments, this.removeResource, this);
+		return this;
+	},
+
 	hasResource: function(key){
 		return (this._resources[key]) ? true : false;
 	},
 
 	getResource: function(key){
 		if (!this.hasResource(key)) {
-			throw new Error('Resource ' + key + ' was not found. ');
+			throw new Error('Resource ' + key + ' was not found.');
 		}
 		return this._resources[key];
 	},
 
 	getResources: function(){
-		return this._resources;
+		var args = Array.from(arguments);
+		return args.map(this.getResource, this).associate(args);
 	}
 
 });

@@ -1,4 +1,4 @@
-<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher.Resource"></script>
+<script type="text/javascript" src="/depender/build?require=Core/Element.Event,URLDispatcher/URLDispatcher.Resource"></script>
 <script type="text/javascript">
 (function(doc){
 
@@ -9,15 +9,60 @@
 	window.addEventListener('load', function(){
 
 		var mock = new Mock();
-		mock.addResource('foo', {
-			key: 'foo'
+
+		var testcases = [];
+		testcases.push({
+			title: 'addResource/removeResource',
+			description : 'addResource and removeResource method testcase',
+			fn: function(){
+				var foo = { key: 'foo' };
+				mock.addResource('foo', foo);
+				log( (mock.hasResource('foo')) ? 'assert ok' : 'invalid foo' );
+				mock.removeResource('foo');
+				log( (!mock.hasResource('foo')) ? 'assert ok' : 'invalid foo' );
+			}
 		});
 
-		mock.addResources({
-			key1: 'foo',
-			key2: 'bar'
+		testcases.push({
+			title: 'addResources/removeResources',
+			description : 'addResources and removeResources method testcase',
+			fn: function(){
+				var foo = { key: 'foo' };
+				var bar = { key: 'foo' };
+				mock.addResources({ 
+					foo: foo,
+					bar: bar
+				});
+				log( (mock.hasResource('foo')) ? 'assert ok' : 'invalid foo' );
+				log( (mock.hasResource('bar')) ? 'assert ok' : 'invalid foo' );
+
+				mock.removeResources('foo', 'bar');
+				log( (!mock.hasResource('foo')) ? 'assert ok' : 'invalid foo' );
+				log( (!mock.hasResource('bar')) ? 'assert ok' : 'invalid foo' );
+			}
 		});
 
+		testcases.push({
+			title: 'getResource/getResources',
+			description : 'getResource and getResources method testcase',
+			fn: function(){
+				var foo = { key: 'foo' };
+				var bar = { key: 'foo' };
+				mock.addResource('foo', foo);
+				mock.addResource('bar', bar);
+
+				log( (mock.getResource('foo') == foo) ? 'assert ok' : 'invalid foo' );
+
+				var hash = mock.getResources('foo', 'bar');
+				log( (hash.foo == foo) ? 'assert ok' : 'invalid foo' );
+				log( (hash.bar == bar) ? 'assert ok' : 'invalid foo' );
+			}
+		});
+		makeActions(testcases);
+
+		testcases.each(function(testcase, key){
+			$('test-' + key.toString()).fireEvent('click');
+		});
 
 	}, false);
 
