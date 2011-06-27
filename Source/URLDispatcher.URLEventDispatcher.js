@@ -34,10 +34,28 @@ dispatcher.URLEventDispatcher = new Class({
 
 	Implements: [Events, Options, dispatcher.Resource],
 
-	initialize: function(){
+	options: {
+/*
+		resources: null,
+		routes: null
+*/
+	},
+
+	initialize: function(options){
+		this.setOptions(this._prepere(options));
 		this._router = new dispatcher.Router();
 		this._handlers = new dispatcher.HandlerManager();
 	},
+
+	_prepere: function(options){
+		var props = Object.subset(options || {}, ['routes', 'resources']);
+		for (var key in props){
+			var setter = 'add' + key.capitalize();
+			this[setter](props[key]);
+			delete options[key];
+		}
+		return options;
+	}.protect(),
 
 	addRoute: function(paturn, handler, conditions){
 		var stackHandler = (!Type.isURLDispatcherHandler(handler)) ? new dispatcher.Handler(handler) : handler;
