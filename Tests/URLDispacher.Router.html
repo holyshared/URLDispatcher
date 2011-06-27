@@ -1,73 +1,114 @@
-<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher.Router"></script>
+<script type="text/javascript" src="/depender/build?require=Element.Event,URLDispatcher/URLDispatcher.Router"></script>
 <script type="text/javascript">
 (function(doc){
 
 	window.addEventListener('load', function(){
 
-		var router = new URLDispatcher.Router();
-
-		router.addRoute('^/:name', ['\\w+']);
-		router.addRoutes([
-			{
-				paturn: '^/:value',
-				conditions: ['\\w+']
-			}, {
-				paturn: '^/:type/:name',
-				conditions: ['\\w+', '\\w+']
+		var testcases = [];
+	
+		testcases.push({
+			title: 'addRoute/addRoutes',
+			description : 'addRoute and addRoutes method testcase',
+			fn: function(){
+				var router = new URLDispatcher.Router();
+	
+				router.addRoute('^/:name', ['\\w+']);
+				router.addRoutes([
+					{
+						paturn: '^/:value',
+						conditions: ['\\w+']
+					}, {
+						paturn: '^/:type/:name',
+						conditions: ['\\w+', '\\w+']
+					}
+				]);
+				log ( (router.hasRoute('^/:name')) ? 'assert ok' : 'Route [^/:name] is not found.' );
+				log ( (router.hasRoute('^/:value')) ? 'assert ok' : 'Route [^/:value] is not found.' );
+				log ( (router.hasRoute('^/:type/:name')) ? 'assert ok' : 'Route [^/:type/:name] is not found.' );
 			}
-		]);
-
-		if (router.hasRoute('^/:name')) {
-			console.log('assert ok');
-		} else {
-			console.log('assert ng');
-		}
-
-		if (router.hasRoute('^/:value')) {
-			console.log('assert ok');
-		} else {
-			console.log('assert ng');
-		}
-
-		if (router.hasRoute('^/:type/:name')) {
-			console.log('assert ok');
-		} else {
-			console.log('assert ng');
-		}
-
-		router.removeRoute('^/:name');
-		router.removeRoutes([
-			'^/:value',
-			'^/:type/:name'
-		]);
-
-		if (router.getLength() <= 0) {
-			console.log('assert ok');
-		} else {
-			console.log('assert ng');
-		}
-
-		router.addRoutes([
-			{
-				paturn: '^/:value',
-				conditions: ['\\w+']
-			}, {
-				paturn: '^/:type/:name',
-				conditions: ['\\w+', '\\w+']
+		});
+	
+		testcases.push({
+			title: 'removeRoute/removeRoutes',
+			description : 'removeRoute and removeRoutes method testcase',
+			fn: function(){
+				var router = new URLDispatcher.Router();
+	
+				router.addRoute('^/:a', ['\\w+'])
+					.addRoute('^/:b', ['\\w+'])
+					.addRoute('^/:c', ['\\w+']);
+	
+				router.removeRoute('^/:a');
+				log ( (!router.hasRoute('^/:a')) ? 'assert ok' : 'Route [^/:a] is not removed' );
+	
+				router.removeRoutes('^/:b', '^/:c');
+				log ( (!router.hasRoute('^/:b')) ? 'assert ok' : 'Route [^/:b] is not removed' );
+				log ( (!router.hasRoute('^/:c')) ? 'assert ok' : 'Route [^/:c] is not removed' );
 			}
-		]);
+		});
+	
+		testcases.push({
+			title: 'getRoute/getRoutes',
+			description : 'getRoute and getRoutes method testcase',
+			fn: function(){
+				var router = new URLDispatcher.Router();
+	
+				router.addRoute('^/:a', ['\\w+'])
+					.addRoute('^/:b', ['\\w+'])
+					.addRoute('^/:c', ['\\w+']);
+	
+				var route = router.getRoute('^/:a');
+				log ( (Type.isURLDispatcherRoute(route)) ? 'assert ok' : 'It is not a route. [^/:a]' );
+	
+				var routes = router.getRoutes('^/:a', '^/:b');
 
-		if (router.getRoute('^/:value')) {
-			console.log('assert ok');
-		} else {
-			console.log('assert ng');
-		}
+				log ( (Type.isURLDispatcherRoute(routes['^/:a'])) ? 'assert ok' : 'It is not a route. [^/:b]' );
+				log ( (Type.isURLDispatcherRoute(routes['^/:b'])) ? 'assert ok' : 'It is not a route. [^/:c]' );
+			}
+		});
+	
+		testcases.push({
+			title: 'match',
+			description : 'match method testcase',
+			fn: function(){
+				var router = new URLDispatcher.Router();
+	
+				router.addRoute('^/:a$', ['[a-zA-Z]+'])
+					.addRoute('^/:b/:c', ['[a-zA-Z]+', '\\d+']);
+	
+				var route = router.match('/foo');
+				log ( (route.url == '/foo') ? 'assert ok' : 'It is sure to match it to the route.' );
 
-		if (Object.getLength(router.getRoutes()) > 0) {
-			console.log('assert ok');
-		} else {
-			console.log('assert ng');
-		}
+				var route = router.match('/100/100');
+				log ( (route == false) ? 'assert ok' : 'It doesn\'t match it to the route.' );
+			}
+		});
+	
+		testcases.push({
+			title: 'getLength',
+			description : 'getLength method testcase',
+			fn: function(){
+				var router = new URLDispatcher.Router();
+	
+				router.addRoute('^/:a', ['\\w+'])
+					.addRoute('^/:b/:c', ['\\w+', '\\w+']);
+	
+				var count = router.getLength();
+				log ( (count == 2) ? 'assert ok' : 'The route is two.' );
+	
+	
+				router.removeRoute('^/:a');
+				var count = router.getLength();
+				log ( (count == 1) ? 'assert ok' : 'The route is one.' );
+
+			}
+		});
+	
+		makeActions(testcases);
+
+		testcases.each(function(testcase, key){
+			$('test-' + key.toString()).fireEvent('click');
+		});
 
 	}, false);
 

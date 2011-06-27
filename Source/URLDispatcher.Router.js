@@ -51,6 +51,7 @@ dispatcher.Router = new Class({
 		};
 		var route = new URLDispatcher.Route(options);
 		this._routes[paturn] = route;
+		return this;
 	},
 
 	addRoutes: function(routes){
@@ -61,6 +62,7 @@ dispatcher.Router = new Class({
 		routes.each(function(route, key){
 			self.addRoute(route.paturn, route.conditions);
 		});
+		return this;
 	},
 
 	removeRoute: function(paturn){
@@ -68,16 +70,12 @@ dispatcher.Router = new Class({
 			return false;
 		}
 		delete this._routes[paturn];
+		return this;
 	},
 
 	removeRoutes: function(paturns){
-		if (!Type.isArray(paturns)) {
-			throw new TypeError('Please specify the route by the array.');
-		}
-		var self = this;
-		paturns.each(function(paturn, key){
-			self.removeRoute(paturn);
-		});
+		Array.each(arguments, this.removeRoute, this);
+		return this;
 	},
 
 	getRoute: function(paturn){
@@ -88,7 +86,8 @@ dispatcher.Router = new Class({
 	},
 
 	getRoutes: function(){
-		return this._routes;
+		var args = Array.from(arguments);
+		return args.map(this.getRoute, this).associate(args);
 	},
 
 	getLength: function(){

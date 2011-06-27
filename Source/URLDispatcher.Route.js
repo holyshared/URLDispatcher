@@ -128,4 +128,6 @@ dispatcher.Route = new Class({
 
 });
 
+new Type('URLDispatcherRoute', dispatcher.Route);
+
 }(URLDispatcher));
