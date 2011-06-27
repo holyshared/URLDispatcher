@@ -1,45 +1,80 @@
-<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher.HandlerManager"></script>
+<script type="text/javascript" src="/depender/build?require=Element.Event,URLDispatcher/URLDispatcher.HandlerManager"></script>
 <script type="text/javascript">
 (function(doc){
 
 	window.addEventListener('load', function(){
 
-		var handler = new URLDispatcher.Handler(function(context){
+		var testcases = [];
+		testcases.push({
+			title: 'addHandler/addHandlers',
+			description : 'addHandler and addHandlers method testcase',
+			fn: function(){
 
+				var h1 = new URLDispatcher.Handler(function(context){
+
+				});
+
+				var manager = new URLDispatcher.HandlerManager();
+
+				manager.addHandler('h1', h1);
+				log( (manager.hasHandler('h1')) ? 'assert ok' : 'Handler is not found.' );
+				manager.removeHandler('h1');
+				log( (!manager.hasHandler('h1')) ? 'assert ok' : 'There is still handler.' );
+			}
 		});
 
-		var manager = new URLDispatcher.HandlerManager();
-		manager.addHandler('^/foo', handler)
-			.addHandler('^/bar', handler)
-			.addHandlers({
-				'^/aaa': handler,
-				'^/bbb': handler
-			});
+		testcases.push({
+			title: 'addHandlers/removeHandlers',
+			description : 'addHandlers and removeHandlers method testcase',
+			fn: function(){
 
-		manager.removeHandler('^/foo')
-			.removeHandler('^/bar')
-			.removeHandlers('^/aaa', '^/bbb');
+				var h1 = new URLDispatcher.Handler(function(context){
+				});
+				var h2 = new URLDispatcher.Handler(function(context){
+				});
 
-		if (manager.hasHandler('^/foo')) {
-			log('assert ng');
-		} else {
-			log('assert ok');
-		}
+				var manager = new URLDispatcher.HandlerManager();
 
-		if (manager.getLength() == 0) {
-			log('assert ok');
-		} else {
-			log('assert ng');
-		}
+				manager.addHandlers({
+					h1: h1,
+					h2: h2
+				});
+				log( (manager.hasHandler('h1')) ? 'assert ok' : 'There is no h1.' );
+				log( (manager.hasHandler('h2')) ? 'assert ok' : 'There is no h2.' );
 
-		manager.addHandler('^/foo', handler);
+				manager.removeHandlers('h1', 'h2');
+				log( (!manager.hasHandler('h1')) ? 'assert ok' : 'There is h1.' );
+				log( (!manager.hasHandler('h2')) ? 'assert ok' : 'There is h2.' );
+			}
+		});
 
-		if (handler = manager.getHandler('^/foo')) {
-			log('assert ok');
-		} else {
-			log('assert ng');
-		}
+		testcases.push({
+			title: 'getHandler/getHandlers',
+			description : 'getHandler and getHandlers method testcase',
+			fn: function(){
 
+				var h1 = new URLDispatcher.Handler(function(context){
+				});
+				var h2 = new URLDispatcher.Handler(function(context){
+				});
+
+				var manager = new URLDispatcher.HandlerManager();
+
+				manager.addHandler('h1', h1);
+				manager.addHandler('h2', h2);
+
+				log( (manager.getHandler('h1') == h1) ? 'assert ok' : 'There is no h1.' );
+
+				var hash = manager.getHandlers('h1', 'h2');
+				log( (hash.h1 == h1) ? 'assert ok' : 'There is no h1.' );
+				log( (hash.h2 == h2) ? 'assert ok' : 'There is no h2.' );
+			}
+		});
+		makeActions(testcases);
+
+		testcases.each(function(testcase, key){
+			$('test-' + key.toString()).fireEvent('click');
+		});
 
 	}, false);
 

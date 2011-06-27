@@ -54,11 +54,7 @@ dispatcher.HandlerManager = new Class({
 	},
 
 	removeHandlers: function(){
-		var handlers = Array.from(arguments);
-		var self = this;
-		handlers.each(function(key){
-			self.removeHandler(key);
-		});
+		Array.each(arguments, this.removeHandler, this);
 		return this;
 	},
 
@@ -73,8 +69,9 @@ dispatcher.HandlerManager = new Class({
 		return this._handlers[key];
 	},
 
-	getHandlers: function(key){
-		return this._handlers;
+	getHandlers: function(){
+		var args = Array.from(arguments);
+		return args.map(this.getHandler, this).associate(args);
 	},
 
 	getLength: function(){
