@@ -10,7 +10,7 @@
 			title: 'setContext/getContext',
 			description : 'setContext and getContext method testcase',
 			fn: function(){
-				var handler = new URLDispatcher.Handler(function(context){
+				var handler = new URLDispatcher.Handler(function(){
 				});
 				var context = { foo: 100 };
 				handler.setContext(context);
@@ -23,7 +23,7 @@
 			title: 'getArg/getArgs',
 			description : 'getArg and getArgs method testcase',
 			fn: function(){
-				var handler = new URLDispatcher.Handler(function(context){
+				var handler = new URLDispatcher.Handler(function(){
 				});
 				var context = {
 					args: {
@@ -47,7 +47,7 @@
 			title: 'getParam/getParams',
 			description : 'getParam and getParams method testcase',
 			fn: function(){
-				var handler = new URLDispatcher.Handler(function(context){
+				var handler = new URLDispatcher.Handler(function(){
 				});
 				var context = {
 					params: {
@@ -101,11 +101,6 @@
 
 			}
 		});
-
-
-
-
-
 
 		makeActions(testcases);
 

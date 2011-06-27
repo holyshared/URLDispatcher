@@ -1,79 +1,136 @@
-<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher.URLEventDispatcher,URLDispatcher/URLDispatcher.Handler"></script>
+<script type="text/javascript" src="/depender/build?require=Element.Event,URLDispatcher/URLDispatcher.URLEventDispatcher,URLDispatcher/URLDispatcher.Handler"></script>
 <script type="text/javascript">
 (function(doc){
 
 	window.addEventListener('load', function(){
 
-		var h = new URLDispatcher.Handler(function(){});
+		var testcases = [];
 
-		try {
-			h.setDispatcher('aa');
-			log('assert ng');
-		} catch(e){
-			log('assert ok');
-		}
+		testcases.push({
+			title: 'addRoute/addRoutes',
+			description : 'addRoute and addRoutes method testcase',
+			fn: function(){
+				var handler = new URLDispatcher.Handler(function(){
+				});
 
-		try {
-			h.setDispatcher(new URLDispatcher.URLEventDispatcher());
-			log('assert ok');
-		} catch(e){
-			log('assert ng');
-		}
+				var dispatcher = new URLDispatcher.URLEventDispatcher();
+				dispatcher.addRoute('^/:name', handler, ['\\w+']);
 
-		var options = {
-			paturn: '^/:name',
-			conditions: ['\\w+']
-		};
-		var route = new URLDispatcher.Route(options);
+				dispatcher.addRoutes({
+					'^/:name/:type': {
+						handler: handler,
+						conditions: ['\\w+', '\\w+']
+					},
+					'^/:name/:type/:value': {
+						handler: handler,
+						conditions: ['\\w+', '\\w+', '\\w+']
+					}	
+				});
 
-		var h1 = new URLDispatcher.Handler(function(){
-			var name = this.getParam('name');
-			log( (name == 'foo') ? 'assert ok' : 'assert ng' ); 
+				log ( (dispatcher.hasRoute('^/:name')) ? 'assert ok' : '^/:name is not set.' );
+				log ( (dispatcher.hasRoute('^/:name/:type')) ? 'assert ok' : '^/:name/:type is not set.' );
+				log ( (dispatcher.hasRoute('^/:name/:type/:value')) ? 'assert ok' : '^/:name/:type/:value is not set.' );
+			}
 		});
 
-		var h2 = new URLDispatcher.Handler(function(){
-			var key = this.getParam('key');
-			var type = this.getParam('type');
+		testcases.push({
+			title: 'removeRoute/removeRoutes',
+			description : 'removeRoute and removeRoutes method testcase',
+			fn: function(){
+				var handler = new URLDispatcher.Handler(function(){
+				});
 
-			log( (key == 'foo') ? 'assert ok' : 'assert ng' ); 
-			log( (type == 'moo') ? 'assert ok' : 'assert ng' ); 
+				var dispatcher = new URLDispatcher.URLEventDispatcher();
+				dispatcher.addRoute('^/:name', handler, ['\\w+']);
+
+				dispatcher.addRoutes({
+					'^/:name/:type': {
+						handler: handler,
+						conditions: ['\\w+', '\\w+']
+					},
+					'^/:name/:type/:value': {
+						handler: handler,
+						conditions: ['\\w+', '\\w+', '\\w+']
+					}	
+				});
+
+				dispatcher.removeRoute('^/:name');
+				log ( (!dispatcher.hasRoute('^/:name')) ? 'assert ok' : '^/:name is set.' );
+
+				dispatcher.removeRoutes('^/:name/:type', '^/:name/:type/:value');
+
+				log ( (!dispatcher.hasRoute('^/:name/:type')) ? 'assert ok' : '^/:name/:type is set.' );
+				log ( (!dispatcher.hasRoute('^/:name/:type/:value')) ? 'assert ok' : '^/:name/:type/:value is set.' );
+			}
+		});
+
+		testcases.push({
+			title: 'dispatch',
+			description : 'dispatch method testcase',
+			fn: function(){
+				var h1 = new URLDispatcher.Handler(function(){
+					var value = this.getArg('key1');
+					log ( (value == 'value1') ? 'assert ok' : '{h1} The [key1] is invalid.' );
+
+					var value = this.getParam('name');
+					log ( (value == 'foo') ? 'assert ok' : 'The params is invalid.' );
+
+					this.redirect('/foo/mootools', {
+						key1: 'value1'
+					});
+				});
+
+				var h2 = new URLDispatcher.Handler(function(){
+					var value = this.getArg('key1');
+					log ( (value == 'value1') ? 'assert ok' : '{h2} The [key1] is invalid.' );
+
+					var values = this.getParams('name', 'type');
+					log ( (values.name == 'foo') ? 'assert ok' : 'The [name] is invalid.' );
+					log ( (values.type == 'mootools') ? 'assert ok' : 'The [type] is invalid.' );
+				});
+
+				var dispatcher = new URLDispatcher.URLEventDispatcher();
+				dispatcher.addRoute('^/:name', h1, ['\\w+']);
+				dispatcher.addRoute('^/:name/:type', h2, ['\\w+', '\\w+']);
+
+				dispatcher.dispatch('/foo', {
+					key1: 'value1'
+				});
+			}
 		});
 
 
-		var eventHandler = function(){
-			var name = this.getParam('name');
-			var status = this.getParam('status');
-			var page = this.getParam('page');
-			log( (name == 'holyshared') ? 'assert ok' : 'assert ng' );
-			log( (status == 'sleep') ? 'assert ok' : 'assert ng' );
-			log( (page == 100) ? 'assert ok' : 'assert ng' );
-		};
+		testcases.push({
+			title: 'getResource/getResources',
+			description : 'getResource and getResources method testcase',
+			fn: function(){
+				var h1 = new URLDispatcher.Handler(function(){
+					var log = this.getResources('log');
+					if (log.log) {
+						var logger = log.log;
+						logger.log( 'assert ok' );
+					} else {
+						log('Log is not found');
+					}
+				});
 
-		var h3 = {
-			preDispatch: eventHandler,
-			execute: eventHandler,
-			postDispatch: eventHandler
-		};
+				var dispatcher = new URLDispatcher.URLEventDispatcher();
+				dispatcher.addRoute('^/:name', h1, ['\\w+']);
+				dispatcher.addResource('log', {
+					log: function(message){
+						log(message);
+					}
+				});
 
-		var dispatcher = new URLDispatcher();
-		dispatcher.addRoute('^/:name', h1, ['\\w+']);
-		dispatcher.addRoute('^/:key/:type', h2, ['\\w+', '\\w+']);
-		dispatcher.addRoute('^/:name/:status/:page', h3, ['\\w+', '\\w+', '\\d+']);
-
-		dispatcher.dispatch('/foo');
-		dispatcher.dispatch('/foo/moo');
-		dispatcher.dispatch('/holyshared/sleep/100');
-
-		h2.redirect('/foo/moo', {
-			value1: 1,
-			value2: 2
+				dispatcher.dispatch('/foo');
+			}
 		});
 
-		dispatcher.removeRoute('^/:name')
-			.removeRoute('^/:key/:type');
+		makeActions(testcases);
 
-		log( (!dispatcher.hasRoute('^/:name')) ? 'assert ok' : 'assert ng' ); 
-		log( (!dispatcher.hasRoute('^/:key/:type')) ? 'assert ok' : 'assert ng' ); 
+		testcases.each(function(testcase, key){
+			$('test-' + key.toString()).fireEvent('click');
+		});
 
 	}, false);
 

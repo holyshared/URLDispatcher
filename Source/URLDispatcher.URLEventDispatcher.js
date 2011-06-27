@@ -47,9 +47,22 @@ dispatcher.URLEventDispatcher = new Class({
 		return this;
 	},
 
+	addRoutes: function(routes){
+		var self = this;
+		Object.each(routes, function(route, key){
+			self.addRoute(key, route.handler, route.conditions);
+		});
+		return this;
+	},
+
 	removeRoute: function(paturn){
 		this._router.removeRoute(paturn);
 		this._handlers.removeHandler(paturn);
+		return this;
+	},
+
+	removeRoutes: function(){
+		Array.each(arguments, this.removeRoute, this);
 		return this;
 	},
 
@@ -129,7 +142,8 @@ dispatcher.Handler.implement({
 	},
 
 	getResources: function(){
-		return this.getDispatcher().getResources();
+		var resources = Array.from(arguments);
+		return this.getDispatcher().getResources.apply(this, resources);
 	}
 
 });

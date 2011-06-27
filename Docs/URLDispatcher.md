@@ -36,11 +36,12 @@ URLDispatcher.URLEventDispatcher
 ### Methods
 
 * addRoute (string, object, [array]) - 
+* addRoutes (object) - 
 * removeRoute (string) - 
+* removeRoutes (string, [string]) - 
 * dispatch (string, [object]) - 
 * hasRoute (string) - 
 * getLength - 
-
 
 
 URLDispatcher.Resource
