@@ -58,23 +58,23 @@ dispatcher.Handler = new Class({
 	},
 
 	getArg: function(name){
-		var args = this.getArgs();
-		return args[name] || null;
+		var context = this.getContext();
+		return context.args[name] || null;
 	},
 
 	getArgs: function(){
-		var context = this.getContext();
-		return context.args;
+		var args = Array.from(arguments);
+		return args.map(this.getArg, this).associate(args);
 	},
 
 	getParam: function(name){
-		var params = this.getParams();
-		return params[name] || null;
+		var context = this.getContext();
+		return context.params[name] || null;
 	},
 
 	getParams: function(){
-		var context = this.getContext();
-		return context.params;
+		var args = Array.from(arguments);
+		return args.map(this.getParam, this).associate(args);
 	},
 
 	execute: function(){}
