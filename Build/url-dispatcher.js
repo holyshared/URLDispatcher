@@ -140,51 +140,57 @@ dispatcher.Route = new Class({
 	},
 
 	match: function(url){
-		var re = this.toRegExp();
+		var re = this._compile();
 		if (!re.test(url)) {
 			return false;
 		}
+
 		var values = url.match(re);
-		var targetUrl = (Type.isArray(values)) ? values.shift() : url;
+		var route = (Type.isArray(values)) ? values.shift() : url;
+
+		var params = values.associate(this._toKeys());
 
 		var result = {
-			url: targetUrl,
+			url: route,
 			paturn: this.getPaturn(),
 			conditions: this.getConditions(),
-			params: this.getParams(values)
+			params: params
 		};
 		return result;
 	},
 
-	toRegExp: function(){
+	_compile: function(){
 		var paturn = this.getPaturn();
-		var conds = this.getConditions();
-		var paths = paturn.split('/');
-		var index = 0;
-		paths.each(function(value, key){
-			if (value.charAt(0) == ':'){
-				if (!conds[index]) {
-					throw new Error('The corresponding pattern is not found.');
-				}
-				paths[key] = '(' + conds[index] + ')';
-				index++;
-			}
+		var map = this._toMap();
+		Object.each(map, function(value, key){
+			paturn = paturn.replace(key, '(' + value + ')');
 		});
-		return new RegExp(paths.join('/'));
+		return new RegExp(paturn); 
 	},
 
-	getParams: function(values){
-		var index = 0;
-		var result = {};
+	_toMap: function(){ 
+		var conditions = this.getConditions();
+		var elements = this._getElements();
+		var map = conditions.associate(elements);
+		return map;
+	},
+
+	_toKeys: function(){
+		var elements = this._getElements();
+		return elements.invoke('replace', ':', '');		
+	},
+
+	_getElements: function(){
 		var paturn = this.getPaturn();
-		var placeHolders = paturn.split('/');
-		placeHolders.each(function(value, key){
-			if (value.charAt(0) == ':'){
-				var storeKey = value.replace(':', '');
-				result[storeKey] = values[index++];
-			}
-		});
-		return result;
+		var re = new RegExp('(:\\w+)', 'g');
+		var placeHolders = paturn.match(re);
+		return placeHolders;
+	},
+
+	isValid: function() {
+		var elements = this._getElements();
+		var map = this._toMap();
+		return (Object.getLength(map) == elements.length);
 	},
 
 	getPaturn: function(){
@@ -210,17 +216,25 @@ dispatcher.Route = new Class({
 	},
 
 	assemble: function(values){
-		var paturn = this.getPaturn();
-		var re = new RegExp(':[a-zA-Z]+\/?');
-		if (re.test(paturn) && values) {
-			for (var key in values) {
-				var re = new RegExp(':' + key);
-				if (!re.test(paturn)) {
-					throw new Error(key + ' is not found from the URL pattern.');
-				}
-				paturn = paturn.replace(':' + key, values[key]);
-			}
+		if (!this.isValid()){
+			throw new Error('Placeholder is not corresponding to the condition. ');
 		}
+
+		var paturn = this.getPaturn();
+		var conditions = this.getConditions();
+		
+		var re = new RegExp('(:\\w+)', 'g');
+		    
+		var placeHolders = paturn.match(re);
+		var map = conditions.associate(placeHolders);
+		Object.each(map, function(value, key){
+		    var assginValue = values[key.replace(':', '')];
+		    if (assginValue.match(new RegExp(value))){
+				paturn = paturn.replace(key, assginValue);
+		    } else {
+				throw new Error(key + ' is not found from the URL pattern.');
+		    }
+		});
 		if (paturn.charAt(0) == '^') {
 			paturn = paturn.replace('^', '')
 		}
