@@ -39,23 +39,57 @@ dispatcher.Route = new Class({
 	},
 
 	match: function(url){
-		var re = this.toRegExp();
+		var re = this._compile();
 		if (!re.test(url)) {
 			return false;
 		}
+
 		var values = url.match(re);
-		var targetUrl = (Type.isArray(values)) ? values.shift() : url;
+		var route = (Type.isArray(values)) ? values.shift() : url;
+
+		var params = values.associate(this.getKeys());
 
 		var result = {
-			url: targetUrl,
+			url: route,
 			paturn: this.getPaturn(),
 			conditions: this.getConditions(),
-			params: this.getParams(values)
+			params: params
 		};
 		return result;
 	},
 
-	toRegExp: function(){
+	_compile: function(){
+		var paturn = this.getPaturn();
+		var map = this.getPlaceHoldrsMap();
+		Object.each(map, function(value, key){
+			paturn = paturn.replace(key, '(' + value + ')');
+		});
+		return new RegExp(paturn); 
+	},
+
+	getPlaceHoldrsMap: function(){ 
+		var conditions = this.getConditions();
+		var placeHolders = this.getPlaceHoldrs();
+		var map = conditions.associate(placeHolders);
+		return map;
+	},
+
+	getKeys: function(){
+		var placeHolders = this.getPlaceHoldrs();
+		return placeHolders.invoke('replace', ':', '');		
+	},
+
+	getPlaceHoldrs: function(){
+		var paturn = this.getPaturn();
+		var re = new RegExp('(:\\w+)', 'g');
+		var placeHolders = paturn.match(re);
+		return placeHolders;
+	},
+
+
+
+/*
+	_toRegExp: function(){
 		var paturn = this.getPaturn();
 		var conds = this.getConditions();
 		var paths = paturn.split('/');
@@ -70,9 +104,9 @@ dispatcher.Route = new Class({
 			}
 		});
 		return new RegExp(paths.join('/'));
-	},
+	}.protect(),
 
-	getParams: function(values){
+	_getParams: function(values){
 		var index = 0;
 		var result = {};
 		var paturn = this.getPaturn();
@@ -84,7 +118,9 @@ dispatcher.Route = new Class({
 			}
 		});
 		return result;
-	},
+	}.protect(),
+*/
+
 
 	getPaturn: function(){
 		return this._paturn;
@@ -110,16 +146,20 @@ dispatcher.Route = new Class({
 
 	assemble: function(values){
 		var paturn = this.getPaturn();
-		var re = new RegExp(':[a-zA-Z]+\/?');
-		if (re.test(paturn) && values) {
-			for (var key in values) {
-				var re = new RegExp(':' + key);
-				if (!re.test(paturn)) {
-					throw new Error(key + ' is not found from the URL pattern.');
-				}
-				paturn = paturn.replace(':' + key, values[key]);
-			}
-		}
+		var conditions = this.getConditions();
+		
+		var re = new RegExp('(:\\w+)', 'g');
+		    
+		var placeHolders = paturn.match(re);
+		var map = conditions.associate(placeHolders);
+		Object.each(map, function(value, key){
+		    var assginValue = values[key.replace(':', '')];
+		    if (assginValue.match(new RegExp(value))){
+				paturn = paturn.replace(key, assginValue);
+		    } else {
+				throw new Error(key + ' is not found from the URL pattern.');
+		    }
+		});
 		if (paturn.charAt(0) == '^') {
 			paturn = paturn.replace('^', '')
 		}

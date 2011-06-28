@@ -30,6 +30,77 @@ Object.append(URLDispatcher, {
 
 /*
 ---
+name: URLDispatcher.Resource
+
+description: 
+
+license: MIT-style
+
+authors:
+- Noritaka Horio
+
+requires:
+  - Core/Object
+  - Core/Class
+  - URLDispatcher/URLDispatcher
+
+provides: [URLDispatcher.Resource]
+
+...
+*/
+
+(function(dispatcher){
+
+dispatcher.Resource = new Class({
+
+	_resources: {},
+
+	addResource: function(key, resource){
+		this._resources[key] = resource;
+	},
+
+	addResources: function(resources){
+		var self = this;
+		Object.each(resources, function(resource, key){
+			self.addResource(key, resource);
+		});
+	},
+
+	removeResource: function(key){
+		if (!this.hasResource(key)) {
+			throw new Error('Resource ' + key + ' was not found.');
+		}
+		delete this._resources[key];
+		return this;
+	},
+
+	removeResources: function(){
+		Array.each(arguments, this.removeResource, this);
+		return this;
+	},
+
+	hasResource: function(key){
+		return (this._resources[key]) ? true : false;
+	},
+
+	getResource: function(key){
+		if (!this.hasResource(key)) {
+			throw new Error('Resource ' + key + ' was not found.');
+		}
+		return this._resources[key];
+	},
+
+	getResources: function(){
+		var args = Array.from(arguments);
+		return args.map(this.getResource, this).associate(args);
+	}
+
+});
+
+}(URLDispatcher));
+
+/*
+---
 name: URLDispatcher.Route
 
 description: 
@@ -158,6 +229,8 @@ dispatcher.Route = new Class({
 
 });
 
+new Type('URLDispatcherRoute', dispatcher.Route);
+
 }(URLDispatcher));
 
 
@@ -214,6 +287,7 @@ dispatcher.Router = new Class({
 		};
 		var route = new URLDispatcher.Route(options);
 		this._routes[paturn] = route;
+		return this;
 	},
 
 	addRoutes: function(routes){
@@ -224,6 +298,7 @@ dispatcher.Router = new Class({
 		routes.each(function(route, key){
 			self.addRoute(route.paturn, route.conditions);
 		});
+		return this;
 	},
 
 	removeRoute: function(paturn){
@@ -231,16 +306,12 @@ dispatcher.Router = new Class({
 			return false;
 		}
 		delete this._routes[paturn];
+		return this;
 	},
 
 	removeRoutes: function(paturns){
-		if (!Type.isArray(paturns)) {
-			throw new TypeError('Please specify the route by the array.');
-		}
-		var self = this;
-		paturns.each(function(paturn, key){
-			self.removeRoute(paturn);
-		});
+		Array.each(arguments, this.removeRoute, this);
+		return this;
 	},
 
 	getRoute: function(paturn){
@@ -251,7 +322,8 @@ dispatcher.Router = new Class({
 	},
 
 	getRoutes: function(){
-		return this._routes;
+		var args = Array.from(arguments);
+		return args.map(this.getRoute, this).associate(args);
 	},
 
 	getLength: function(){
@@ -315,6 +387,7 @@ dispatcher.Handler = new Class({
 			throw new TypeError('The specified value is not object.');
 		}
 		this._context = context;
+		return this;
 	},
 
 	getContext: function(){
@@ -322,30 +395,26 @@ dispatcher.Handler = new Class({
 	},
 
 	getArg: function(name){
-		var args = this.getArgs();
-		return args[name] || null;
+		var context = this.getContext();
+		return context.args[name] || null;
 	},
 
 	getArgs: function(){
-		var context = this.getContext();
-		return context.args;
+		var args = Array.from(arguments);
+		return args.map(this.getArg, this).associate(args);
 	},
 
 	getParam: function(name){
-		var params = this.getParams();
-		return params[name] || null;
+		var context = this.getContext();
+		return context.params[name] || null;
 	},
 
 	getParams: function(){
-		var context = this.getContext();
-		return context.params;
+		var args = Array.from(arguments);
+		return args.map(this.getParam, this).associate(args);
 	},
 
-	preDispatch: function(){},
-
-	execute: function(){},
-
-	postDispatch: function(){}
+	execute: function(){}
 
 });
 
@@ -410,11 +479,7 @@ dispatcher.HandlerManager = new Class({
 	},
 
 	removeHandlers: function(){
-		var handlers = Array.from(arguments);
-		var self = this;
-		handlers.each(function(key){
-			self.removeHandler(key);
-		});
+		Array.each(arguments, this.removeHandler, this);
 		return this;
 	},
 
@@ -429,8 +494,9 @@ dispatcher.HandlerManager = new Class({
 		return this._handlers[key];
 	},
 
-	getHandlers: function(key){
-		return this._handlers;
+	getHandlers: function(){
+		var args = Array.from(arguments);
+		return args.map(this.getHandler, this).associate(args);
 	},
 
 	getLength: function(){
@@ -454,7 +520,10 @@ authors:
 - Noritaka Horio
 
 requires:
+  - Core/Events
+  - Core/Options
   - URLDispatcher/URLDispatcher
+  - URLDispatcher/URLDispatcher.Resource
   - URLDispatcher/URLDispatcher.Router
   - URLDispatcher/URLDispatcher.Handler
   - URLDispatcher/URLDispatcher.HandlerManager
@@ -465,14 +534,22 @@ provides: [URLDispatcher.URLEventDispatcher]
 */
 (function(dispatcher){
 
+//Result Status
+Object.append(dispatcher, {
+	SUCCESS: 0,
+	FAILURE: 1
+});
+
 dispatcher.URLEventDispatcher = new Class({
+
+	Implements: [Events, Options, dispatcher.Resource],
 
 	initialize: function(){
 		this._router = new dispatcher.Router();
 		this._handlers = new dispatcher.HandlerManager();
 	},
 
-	register: function(paturn, handler, conditions){
+	addRoute: function(paturn, handler, conditions){
 		var stackHandler = (!Type.isURLDispatcherHandler(handler)) ? new dispatcher.Handler(handler) : handler;
 		stackHandler.setDispatcher(this);
 		this._router.addRoute(paturn, conditions);
@@ -480,13 +557,26 @@ dispatcher.URLEventDispatcher = new Class({
 		return this;
 	},
 
-	unregister: function(paturn){
+	addRoutes: function(routes){
+		var self = this;
+		Object.each(routes, function(route, key){
+			self.addRoute(key, route.handler, route.conditions);
+		});
+		return this;
+	},
+
+	removeRoute: function(paturn){
 		this._router.removeRoute(paturn);
 		this._handlers.removeHandler(paturn);
 		return this;
 	},
 
-	isRegist: function(paturn) {
+	removeRoutes: function(){
+		Array.each(arguments, this.removeRoute, this);
+		return this;
+	},
+
+	hasRoute: function(paturn) {
 		return this._router.hasRoute(paturn);
 	},
 
@@ -506,9 +596,26 @@ dispatcher.URLEventDispatcher = new Class({
 
 		handler.setContext(context);
 
-		handler.preDispatch();
-		handler.execute();
-		handler.postDispatch();
+		if (Type.isFunction(handler.preDispatch)) {
+			var result = handler.preDispatch() || dispatcher.SUCCESS;
+			if (dispatcher.FAILURE == result) {
+				return new Error('The preDispatch event processing failed. [' + url + ']');
+			}
+		}
+
+		var result = handler.execute() || dispatcher.SUCCESS;
+		if (dispatcher.FAILURE == result) {
+			return new Error('The execute event processing failed. [' + url + ']');
+		}
+
+		if (Type.isFunction(handler.postDispatch)) {
+			var result = handler.postDispatch() || dispatcher.SUCCESS;
+			if (dispatcher.FAILURE == result) {
+				return new Error('The postDispatch event processing failed. [' + url + ']');
+			}
+		}
+
+		return dispatcher.SUCCESS;
 	}
 
 });
@@ -534,7 +641,25 @@ dispatcher.Handler.implement({
 
 });
 
+dispatcher.Handler.implement({
+
+	hasResource: function(key){
+		return this.getDispatcher().hasResource(key);
+	},
+
+	getResource: function(key){
+		return this.getDispatcher().getResource(key);
+	},
+
+	getResources: function(){
+		var resources = Array.from(arguments);
+		return this.getDispatcher().getResources.apply(this, resources);
+	}
+
+});
+
 dispatcher.implement(new dispatcher.URLEventDispatcher());
+
 
 }(URLDispatcher));
 

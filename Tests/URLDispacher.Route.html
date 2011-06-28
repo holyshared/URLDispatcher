@@ -1,55 +1,94 @@
-<script type="text/javascript" src="/depender/build?require=URLDispatcher/URLDispatcher.Route"></script>
+<script type="text/javascript" src="/depender/build?require=Element.Event,URLDispatcher/URLDispatcher.Route"></script>
 <script type="text/javascript">
 (function(doc){
 
 	window.addEventListener('load', function(){
 
-		try {
-			var route = new URLDispatcher.Route();
-			console.log('assert ng');
-		} catch(e) {
-			console.log('assert ok');
-		}
+		var testcases = [];
+		testcases.push({
+			title: 'setPaturn/getPaturn',
+			description : 'setPaturn and getPaturn method testcase',
+			fn: function(){
 
-		var route = new URLDispatcher.Route({ paturn: '^/:name' });
-		route.setPaturn('^/:value');
-		if (route.getPaturn() == '^/:value') {
-			console.log('assert ok');
-		} else {
-			console.log('assert ng');
-		}
+				var route = new URLDispatcher.Route({
+					paturn: '^/:name'
+				});
 
-		var maps = ['\\w+'];
-		route.setConditions(maps);
-		if (route.getConditions() == maps) {
-			console.log('assert ok');
-		} else {
-			console.log('assert ng');
-		}
+				log( (route.getPaturn() == '^/:name') ? 'assert ok' : 'The route is not set.' );
+			}
 
-		var res = route.match('/foo');
-		if (res) {
-			console.log('assert ok');
-		} else {
-			console.log('assert ng');
-		}
-
-		var res = route.match('/1000');
-		if (res) {
-			console.log('assert ok');
-		} else {
-			console.log('assert ng');
-		}
-
-		var res = route.assemble({
-			value: 'default'
 		});
 
-		if (res == '/default') {
-			console.log('assert ok');
-		} else {
-			console.log('assert ng');
-		}
+		testcases.push({
+			title: 'setConditions/getConditions',
+			description : 'setConditions and getConditions method testcase',
+			fn: function(){
+				var conditions = ['\\w+', '\\w+'];
+
+				var route = new URLDispatcher.Route({
+					paturn: '^/:name/:type'
+				});
+				route.setConditions(conditions);
+
+				log( (route.getConditions() == conditions) ? 'assert ok' : 'The conditions is not set.' );
+			}
+		});
+
+		testcases.push({
+			title: 'assemble',
+			description : 'assemble method testcase',
+			fn: function(){
+				var conditions = ['\\w+', '\\w+'];
+
+				var route = new URLDispatcher.Route({
+					paturn: '^/:name/:type'
+				});
+				route.setConditions(conditions);
+
+				var url = route.assemble({
+					name: 'foo',
+					type: 'bar'
+				});
+
+				log( (url == '/foo/bar') ? 'assert ok' : 'It was not possible to convert it into url.' );
+			}
+		});
+
+		testcases.push({
+			title: 'match',
+			description : 'match method testcase',
+			fn: function(){
+				var conditions = ['\\w+', '\\w+'];
+
+				var route = new URLDispatcher.Route({
+					paturn: '^/:name/:type'
+				});
+				route.setConditions(conditions);
+
+				var result = route.match('/foo/bar/');
+
+				log( (result) ? 'assert ok' : 'It doesn\'t match it to the route.' );
+
+
+				var conditions = ['[0-9]', '\\w+'];
+
+				var route = new URLDispatcher.Route({
+					paturn: '^/:name/:type'
+				});
+				route.setConditions(conditions);
+
+				var result = route.match('/foo/bar/');
+
+				log( (!result) ? 'assert ok' : 'It matches it to the route.' );
+			}
+
+		});
+
+		makeActions(testcases);
+
+		testcases.each(function(testcase, key){
+			$('test-' + key.toString()).fireEvent('click');
+		});
 
 	}, false);
 
