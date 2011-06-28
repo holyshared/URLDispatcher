@@ -126,6 +126,31 @@
 			}
 		});
 
+
+
+
+		testcases.push({
+			title: 'beforeDispath/execute/afterDispath',
+			description : 'beforeDispath, execute, afterDispath event testcase',
+			fn: function(){
+				var eventHandler = function(){
+					var name = this.getParam('name');
+					log ( (name == 'foo') ? 'assert ok' : 'The [name] is invalid.' );
+				};
+
+				var h1 = new URLDispatcher.Handler({
+					beforeDispatch: eventHandler,
+					execute: eventHandler,
+					afterDispatch: eventHandler
+				});
+
+				var dispatcher = new URLDispatcher.URLEventDispatcher();
+				dispatcher.addRoute('^/:name', h1, ['\\w+']);
+
+				dispatcher.dispatch('/foo');
+			}
+		});
+
 		makeActions(testcases);
 
 		testcases.each(function(testcase, key){

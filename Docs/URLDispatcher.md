@@ -36,11 +36,8 @@ URLDispatcher.URLEventDispatcher
 * resources (array) - 
 * routes (object) - 
 * onStartup
-* onRouteCheck
-* onRouteMatch
-* onBeforeDispatch
-* onExecute
-* onAfterDispatch
+* onRoutingStart
+* onRoutingEnd
 * onShutdown
 
 
