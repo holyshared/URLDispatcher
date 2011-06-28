@@ -97,6 +97,7 @@ dispatcher.URLEventDispatcher = new Class({
 		if (!result) {
 			return false;
 		}
+
 		var key = result.paturn;
 		var handler = this._handlers.getHandler(key);
 
