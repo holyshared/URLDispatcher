@@ -30,6 +30,77 @@ Object.append(URLDispatcher, {
 
 /*
 ---
+name: URLDispatcher.Resource
+
+description: 
+
+license: MIT-style
+
+authors:
+- Noritaka Horio
+
+requires:
+  - Core/Object
+  - Core/Class
+  - URLDispatcher/URLDispatcher
+
+provides: [URLDispatcher.Resource]
+
+...
+*/
+
+(function(dispatcher){
+
+dispatcher.Resource = new Class({
+
+	_resources: {},
+
+	addResource: function(key, resource){
+		this._resources[key] = resource;
+	},
+
+	addResources: function(resources){
+		var self = this;
+		Object.each(resources, function(resource, key){
+			self.addResource(key, resource);
+		});
+	},
+
+	removeResource: function(key){
+		if (!this.hasResource(key)) {
+			throw new Error('Resource ' + key + ' was not found.');
+		}
+		delete this._resources[key];
+		return this;
+	},
+
+	removeResources: function(){
+		Array.each(arguments, this.removeResource, this);
+		return this;
+	},
+
+	hasResource: function(key){
+		return (this._resources[key]) ? true : false;
+	},
+
+	getResource: function(key){
+		if (!this.hasResource(key)) {
+			throw new Error('Resource ' + key + ' was not found.');
+		}
+		return this._resources[key];
+	},
+
+	getResources: function(){
+		var args = Array.from(arguments);
+		return args.map(this.getResource, this).associate(args);
+	}
+
+});
+
+}(URLDispatcher));
+
+/*
+---
 name: URLDispatcher.Route
 
 description: 
@@ -158,6 +229,8 @@ dispatcher.Route = new Class({
 
 });
 
+new Type('URLDispatcherRoute', dispatcher.Route);
+
 }(URLDispatcher));
 
 
@@ -214,6 +287,7 @@ dispatcher.Router = new Class({
 		};
 		var route = new URLDispatcher.Route(options);
 		this._routes[paturn] = route;
+		return this;
 	},
 
 	addRoutes: function(routes){
@@ -224,6 +298,7 @@ dispatcher.Router = new Class({
 		routes.each(function(route, key){
 			self.addRoute(route.paturn, route.conditions);
 		});
+		return this;
 	},
 
 	removeRoute: function(paturn){
@@ -231,16 +306,12 @@ dispatcher.Router = new Class({
 			return false;
 		}
 		delete this._routes[paturn];
+		return this;
 	},
 
 	removeRoutes: function(paturns){
-		if (!Type.isArray(paturns)) {
-			throw new TypeError('Please specify the route by the array.');
-		}
-		var self = this;
-		paturns.each(function(paturn, key){
-			self.removeRoute(paturn);
-		});
+		Array.each(arguments, this.removeRoute, this);
+		return this;
 	},
 
 	getRoute: function(paturn){
@@ -251,7 +322,8 @@ dispatcher.Router = new Class({
 	},
 
 	getRoutes: function(){
-		return this._routes;
+		var args = Array.from(arguments);
+		return args.map(this.getRoute, this).associate(args);
 	},
 
 	getLength: function(){
@@ -315,6 +387,7 @@ dispatcher.Handler = new Class({
 			throw new TypeError('The specified value is not object.');
 		}
 		this._context = context;
+		return this;
 	},
 
 	getContext: function(){
@@ -322,30 +395,26 @@ dispatcher.Handler = new Class({
 	},
 
 	getArg: function(name){
-		var args = this.getArgs();
-		return args[name] || null;
+		var context = this.getContext();
+		return context.args[name] || null;
 	},
 
 	getArgs: function(){
-		var context = this.getContext();
-		return context.args;
+		var args = Array.from(arguments);
+		return args.map(this.getArg, this).associate(args);
 	},
 
 	getParam: function(name){
-		var params = this.getParams();
-		return params[name] || null;
+		var context = this.getContext();
+		return context.params[name] || null;
 	},
 
 	getParams: function(){
-		var context = this.getContext();
-		return context.params;
+		var args = Array.from(arguments);
+		return args.map(this.getParam, this).associate(args);
 	},
 
-	preDispatch: function(){},
-
-	execute: function(){},
-
-	postDispatch: function(){}
+	execute: function(){}
 
 });
 
@@ -410,11 +479,7 @@ dispatcher.HandlerManager = new Class({
 	},
 
 	removeHandlers: function(){
-		var handlers = Array.from(arguments);
-		var self = this;
-		handlers.each(function(key){
-			self.removeHandler(key);
-		});
+		Array.each(arguments, this.removeHandler, this);
 		return this;
 	},
 
@@ -429,8 +494,9 @@ dispatcher.HandlerManager = new Class({
 		return this._handlers[key];
 	},
 
-	getHandlers: function(key){
-		return this._handlers;
+	getHandlers: function(){
+		var args = Array.from(arguments);
+		return args.map(this.getHandler, this).associate(args);
 	},
 
 	getLength: function(){
@@ -454,7 +520,10 @@ authors:
 - Noritaka Horio
 
 requires:
+  - Core/Events
+  - Core/Options
   - URLDispatcher/URLDispatcher
+  - URLDispatcher/URLDispatcher.Resource
   - URLDispatcher/URLDispatcher.Router
   - URLDispatcher/URLDispatcher.Handler
   - URLDispatcher/URLDispatcher.HandlerManager
@@ -465,14 +534,40 @@ provides: [URLDispatcher.URLEventDispatcher]
 */
 (function(dispatcher){
 
+//Result Status
+Object.append(dispatcher, {
+	SUCCESS: 0,
+	FAILURE: 1
+});
+
 dispatcher.URLEventDispatcher = new Class({
 
-	initialize: function(){
+	Implements: [Events, Options, dispatcher.Resource],
+
+	options: {
+/*
+		resources: null,
+		routes: null
+*/
+	},
+
+	initialize: function(options){
+		this.setOptions(this._prepere(options));
 		this._router = new dispatcher.Router();
 		this._handlers = new dispatcher.HandlerManager();
 	},
 
-	register: function(paturn, handler, conditions){
+	_prepere: function(options){
+		var props = Object.subset(options || {}, ['routes', 'resources']);
+		for (var key in props){
+			var setter = 'add' + key.capitalize();
+			this[setter](props[key]);
+			delete options[key];
+		}
+		return options;
+	}.protect(),
+
+	addRoute: function(paturn, handler, conditions){
 		var stackHandler = (!Type.isURLDispatcherHandler(handler)) ? new dispatcher.Handler(handler) : handler;
 		stackHandler.setDispatcher(this);
 		this._router.addRoute(paturn, conditions);
@@ -480,13 +575,26 @@ dispatcher.URLEventDispatcher = new Class({
 		return this;
 	},
 
-	unregister: function(paturn){
+	addRoutes: function(routes){
+		var self = this;
+		Object.each(routes, function(route, key){
+			self.addRoute(key, route.handler, route.conditions);
+		});
+		return this;
+	},
+
+	removeRoute: function(paturn){
 		this._router.removeRoute(paturn);
 		this._handlers.removeHandler(paturn);
 		return this;
 	},
 
-	isRegist: function(paturn) {
+	removeRoutes: function(){
+		Array.each(arguments, this.removeRoute, this);
+		return this;
+	},
+
+	hasRoute: function(paturn) {
 		return this._router.hasRoute(paturn);
 	},
 
@@ -495,10 +603,18 @@ dispatcher.URLEventDispatcher = new Class({
 	},
 
 	dispatch: function(url, args){
+
+		this.fireEvent('startup');
+
+		this.fireEvent('routingStart');
+
 		var result = this._router.match(url);
 		if (!result) {
 			return false;
 		}
+
+		this.fireEvent('routingEnd');
+
 		var key = result.paturn;
 		var handler = this._handlers.getHandler(key);
 
@@ -506,9 +622,36 @@ dispatcher.URLEventDispatcher = new Class({
 
 		handler.setContext(context);
 
-		handler.preDispatch();
-		handler.execute();
-		handler.postDispatch();
+		//Execute beforeDispatch
+		if (Type.isFunction(handler.beforeDispatch)) {
+			try {
+				handler.beforeDispatch();
+			} catch(exception) {
+				throw exception;
+			}
+		}
+
+		//Execute event
+		if (Type.isFunction(handler.execute)) {
+			try {
+				handler.execute();
+			} catch(exception) {
+				throw exception;
+			}
+		}
+
+		//Execute afterDispatch event
+		if (Type.isFunction(handler.afterDispatch)) {
+			try {
+				handler.afterDispatch();
+			} catch(exception) {
+				throw exception;
+			}
+		}
+
+		this.fireEvent('shutdown');
+
+		return dispatcher.SUCCESS;
 	}
 
 });
@@ -534,7 +677,25 @@ dispatcher.Handler.implement({
 
 });
 
+dispatcher.Handler.implement({
+
+	hasResource: function(key){
+		return this.getDispatcher().hasResource(key);
+	},
+
+	getResource: function(key){
+		return this.getDispatcher().getResource(key);
+	},
+
+	getResources: function(){
+		var resources = Array.from(arguments);
+		return this.getDispatcher().getResources.apply(this, resources);
+	}
+
+});
+
 dispatcher.implement(new dispatcher.URLEventDispatcher());
+
 
 }(URLDispatcher));
 
