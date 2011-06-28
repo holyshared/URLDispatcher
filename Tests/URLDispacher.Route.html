@@ -84,6 +84,41 @@
 
 		});
 
+
+
+		testcases.push({
+			title: 'isValid',
+			description : 'isValid method testcase',
+			fn: function(){
+				var conditions = ['\\w+'];
+
+				var route = new URLDispatcher.Route({
+					paturn: '^/:name/:type'
+				});
+				route.setConditions(conditions);
+
+				var result = route.isValid();
+
+				log( (!result) ? 'assert ok' : 'It is not valid.' );
+
+
+				var conditions = ['\\w+', '\\w+'];
+
+				var route = new URLDispatcher.Route({
+					paturn: '^/:name/:type'
+				});
+				route.setConditions(conditions);
+
+				var result = route.isValid();
+
+				log( (result) ? 'assert ok' : 'It is valid.' );
+
+			}
+
+		});
+
+
+
 		makeActions(testcases);
 
 		testcases.each(function(testcase, key){

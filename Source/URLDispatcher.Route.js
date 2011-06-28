@@ -47,7 +47,7 @@ dispatcher.Route = new Class({
 		var values = url.match(re);
 		var route = (Type.isArray(values)) ? values.shift() : url;
 
-		var params = values.associate(this.getKeys());
+		var params = values.associate(this._toKeys());
 
 		var result = {
 			url: route,
@@ -60,67 +60,37 @@ dispatcher.Route = new Class({
 
 	_compile: function(){
 		var paturn = this.getPaturn();
-		var map = this.getPlaceHoldrsMap();
+		var map = this._toMap();
 		Object.each(map, function(value, key){
 			paturn = paturn.replace(key, '(' + value + ')');
 		});
 		return new RegExp(paturn); 
 	},
 
-	getPlaceHoldrsMap: function(){ 
+	_toMap: function(){ 
 		var conditions = this.getConditions();
-		var placeHolders = this.getPlaceHoldrs();
-		var map = conditions.associate(placeHolders);
+		var elements = this._getElements();
+		var map = conditions.associate(elements);
 		return map;
 	},
 
-	getKeys: function(){
-		var placeHolders = this.getPlaceHoldrs();
-		return placeHolders.invoke('replace', ':', '');		
+	_toKeys: function(){
+		var elements = this._getElements();
+		return elements.invoke('replace', ':', '');		
 	},
 
-	getPlaceHoldrs: function(){
+	_getElements: function(){
 		var paturn = this.getPaturn();
 		var re = new RegExp('(:\\w+)', 'g');
 		var placeHolders = paturn.match(re);
 		return placeHolders;
 	},
 
-
-
-/*
-	_toRegExp: function(){
-		var paturn = this.getPaturn();
-		var conds = this.getConditions();
-		var paths = paturn.split('/');
-		var index = 0;
-		paths.each(function(value, key){
-			if (value.charAt(0) == ':'){
-				if (!conds[index]) {
-					throw new Error('The corresponding pattern is not found.');
-				}
-				paths[key] = '(' + conds[index] + ')';
-				index++;
-			}
-		});
-		return new RegExp(paths.join('/'));
-	}.protect(),
-
-	_getParams: function(values){
-		var index = 0;
-		var result = {};
-		var paturn = this.getPaturn();
-		var placeHolders = paturn.split('/');
-		placeHolders.each(function(value, key){
-			if (value.charAt(0) == ':'){
-				var storeKey = value.replace(':', '');
-				result[storeKey] = values[index++];
-			}
-		});
-		return result;
-	}.protect(),
-*/
-
+	isValid: function() {
+		var elements = this._getElements();
+		var map = this._toMap();
+		return (Object.getLength(map) == elements.length);
+	},
 
 	getPaturn: function(){
 		return this._paturn;
@@ -145,6 +115,10 @@ dispatcher.Route = new Class({
 	},
 
 	assemble: function(values){
+		if (!this.isValid()){
+			throw new Error('Placeholder is not corresponding to the condition. ');
+		}
+
 		var paturn = this.getPaturn();
 		var conditions = this.getConditions();
 		
