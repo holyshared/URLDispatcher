@@ -20,7 +20,9 @@ provides: [URLDispatcher]
 
 (function(){
 
-var URLDispatcher = this.URLDispatcher = function(){};
+var URLDispatcher = this.URLDispatcher = function(){
+	this.initialize.apply(this, arguments);
+};
 
 Object.append(URLDispatcher, {
 	version: '2.0'
