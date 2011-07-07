@@ -80,6 +80,12 @@
 				var result = route.match('/foo/bar/');
 
 				log( (!result) ? 'assert ok' : 'It matches it to the route.' );
+
+				var route = new URLDispatcher.Route({ paturn: '^/+$' });
+				var result = route.match('/');
+
+				log( (result) ? 'assert ok' : 'It doesn\'t match it to the route.' );
+
 			}
 
 		});

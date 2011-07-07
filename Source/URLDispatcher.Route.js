@@ -70,13 +70,12 @@ dispatcher.Route = new Class({
 	_toMap: function(){ 
 		var conditions = this.getConditions();
 		var elements = this._getElements();
-		var map = conditions.associate(elements);
-		return map;
+		return (elements && conditions) ? conditions.associate(elements) : {};
 	},
 
 	_toKeys: function(){
 		var elements = this._getElements();
-		return elements.invoke('replace', ':', '');		
+		return (elements) ? elements.invoke('replace', ':', '') : [];
 	},
 
 	_getElements: function(){
