@@ -9,29 +9,37 @@ URLDispatcher.URLEventDispatcher
 ------------------------------------------------
 
 	var dispatcher = new URLDispatcher.URLEventDispatcher();
-	dispatcher.addRoute('^/:name', function(context){
+	dispatcher.addRoute('^/:name', function(){
+
 	}, ['\\w+']);
 
 	or
 
 	var handler = {
 
-		preDispatch: function(context){
+		preDispatch: function(){
 			//do something
 		},
 
-		execute: function(context){
+		execute: function(){
 			//do something
 		},
 
-		postDispatch: function(context){
+		postDispatch: function(){
 			//do something
 		}
 	}
 
 	dispatcher.addRoute('^/:name', handler, ['\\w+']);
 
-### Properties
+### Options
+* resources (array) - 
+* routes (object) - 
+* onStartup
+* onRoutingStart
+* onRoutingEnd
+* onShutdown
+
 
 ### Methods
 

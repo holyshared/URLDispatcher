@@ -558,11 +558,36 @@ dispatcher.URLEventDispatcher = new Class({
 
 	Implements: [Events, Options, dispatcher.Resource],
 
+<<<<<<< HEAD:Build/url-dispatcher.js
 	initialize: function(){
+=======
+	options: {
+/*
+		resources: null,
+		routes: null
+*/
+	},
+
+	initialize: function(options){
+		this.setOptions(this._prepere(options));
+>>>>>>> remotes/origin/2.0:Build/dispatcher.js
 		this._router = new dispatcher.Router();
 		this._handlers = new dispatcher.HandlerManager();
 	},
 
+<<<<<<< HEAD:Build/url-dispatcher.js
+=======
+	_prepere: function(options){
+		var props = Object.subset(options || {}, ['routes', 'resources']);
+		for (var key in props){
+			var setter = 'add' + key.capitalize();
+			this[setter](props[key]);
+			delete options[key];
+		}
+		return options;
+	}.protect(),
+
+>>>>>>> remotes/origin/2.0:Build/dispatcher.js
 	addRoute: function(paturn, handler, conditions){
 		var stackHandler = (!Type.isURLDispatcherHandler(handler)) ? new dispatcher.Handler(handler) : handler;
 		stackHandler.setDispatcher(this);
@@ -599,10 +624,18 @@ dispatcher.URLEventDispatcher = new Class({
 	},
 
 	dispatch: function(url, args){
+
+		this.fireEvent('startup');
+
+		this.fireEvent('routingStart');
+
 		var result = this._router.match(url);
 		if (!result) {
 			return false;
 		}
+
+		this.fireEvent('routingEnd');
+
 		var key = result.paturn;
 		var handler = this._handlers.getHandler(key);
 
@@ -610,6 +643,7 @@ dispatcher.URLEventDispatcher = new Class({
 
 		handler.setContext(context);
 
+<<<<<<< HEAD:Build/url-dispatcher.js
 		if (Type.isFunction(handler.preDispatch)) {
 			var result = handler.preDispatch() || dispatcher.SUCCESS;
 			if (dispatcher.FAILURE == result) {
@@ -629,6 +663,37 @@ dispatcher.URLEventDispatcher = new Class({
 			}
 		}
 
+=======
+		//Execute beforeDispatch
+		if (Type.isFunction(handler.beforeDispatch)) {
+			try {
+				handler.beforeDispatch();
+			} catch(exception) {
+				throw exception;
+			}
+		}
+
+		//Execute event
+		if (Type.isFunction(handler.execute)) {
+			try {
+				handler.execute();
+			} catch(exception) {
+				throw exception;
+			}
+		}
+
+		//Execute afterDispatch event
+		if (Type.isFunction(handler.afterDispatch)) {
+			try {
+				handler.afterDispatch();
+			} catch(exception) {
+				throw exception;
+			}
+		}
+
+		this.fireEvent('shutdown');
+
+>>>>>>> remotes/origin/2.0:Build/dispatcher.js
 		return dispatcher.SUCCESS;
 	}
 

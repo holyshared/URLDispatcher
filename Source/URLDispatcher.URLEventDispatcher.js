@@ -34,10 +34,28 @@ dispatcher.URLEventDispatcher = new Class({
 
 	Implements: [Events, Options, dispatcher.Resource],
 
-	initialize: function(){
+	options: {
+/*
+		resources: null,
+		routes: null
+*/
+	},
+
+	initialize: function(options){
+		this.setOptions(this._prepere(options));
 		this._router = new dispatcher.Router();
 		this._handlers = new dispatcher.HandlerManager();
 	},
+
+	_prepere: function(options){
+		var props = Object.subset(options || {}, ['routes', 'resources']);
+		for (var key in props){
+			var setter = 'add' + key.capitalize();
+			this[setter](props[key]);
+			delete options[key];
+		}
+		return options;
+	}.protect(),
 
 	addRoute: function(paturn, handler, conditions){
 		var stackHandler = (!Type.isURLDispatcherHandler(handler)) ? new dispatcher.Handler(handler) : handler;
@@ -75,10 +93,18 @@ dispatcher.URLEventDispatcher = new Class({
 	},
 
 	dispatch: function(url, args){
+
+		this.fireEvent('startup');
+
+		this.fireEvent('routingStart');
+
 		var result = this._router.match(url);
 		if (!result) {
 			return false;
 		}
+
+		this.fireEvent('routingEnd');
+
 		var key = result.paturn;
 		var handler = this._handlers.getHandler(key);
 
@@ -86,24 +112,34 @@ dispatcher.URLEventDispatcher = new Class({
 
 		handler.setContext(context);
 
-		if (Type.isFunction(handler.preDispatch)) {
-			var result = handler.preDispatch() || dispatcher.SUCCESS;
-			if (dispatcher.FAILURE == result) {
-				return new Error('The preDispatch event processing failed. [' + url + ']');
+		//Execute beforeDispatch
+		if (Type.isFunction(handler.beforeDispatch)) {
+			try {
+				handler.beforeDispatch();
+			} catch(exception) {
+				throw exception;
 			}
 		}
 
-		var result = handler.execute() || dispatcher.SUCCESS;
-		if (dispatcher.FAILURE == result) {
-			return new Error('The execute event processing failed. [' + url + ']');
-		}
-
-		if (Type.isFunction(handler.postDispatch)) {
-			var result = handler.postDispatch() || dispatcher.SUCCESS;
-			if (dispatcher.FAILURE == result) {
-				return new Error('The postDispatch event processing failed. [' + url + ']');
+		//Execute event
+		if (Type.isFunction(handler.execute)) {
+			try {
+				handler.execute();
+			} catch(exception) {
+				throw exception;
 			}
 		}
+
+		//Execute afterDispatch event
+		if (Type.isFunction(handler.afterDispatch)) {
+			try {
+				handler.afterDispatch();
+			} catch(exception) {
+				throw exception;
+			}
+		}
+
+		this.fireEvent('shutdown');
 
 		return dispatcher.SUCCESS;
 	}
