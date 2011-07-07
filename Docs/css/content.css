@@ -1,0 +1,19 @@
+section { margin-bottom: 30px; position: relative; }
+
+p, ul, pre {
+	font-size: 108%;
+	line-height: 160%;
+	margin-bottom: 15px
+}
+
+p, ul, pre, h3, h4 {
+	margin-left: 23px;
+}
+
+ul li { margin-left: 15px; list-style: disc; }
+
+
+.copyright {
+	text-transform: uppercase;
+	text-align: center;
+}

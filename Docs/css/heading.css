@@ -1,0 +1,69 @@
+/* ====== Headings ====== */
+/* .h1-.h6 classes should be used to maintain the semantically appropriate heading levels - NOT for use on non-headings */
+h1, .h1{font-size:196%; font-weight:normal; font-style: normal; color:#AE0345;}
+h2, .h2{font-size:167%; font-weight:normal; font-style: normal; color:#AE0345;  margin-bottom: 15px; }
+h3, .h3{font-size:146.5%; font-weight:normal; font-style: normal; color:#DF2B72; margin-bottom: 10px; }
+h4, .h4{font-size:123.1%; font-weight:normal; font-style: normal; color: #333;}
+h5, .h5{font-size:108%; font-weight:bold; font-style: normal; color:#AE0345;}
+h6, .h6{font-size:108%; font-weight:normal; font-style: italic; color:#333;}
+
+h2 ~ h2, .h2 ~ .h2 { margin-top: 45px; }
+h3 ~ h3, .h3 ~ .h3 { margin-top: 30px; }
+h3 ~ h3, .h3 ~ .h3 { margin-top: 15px; }
+
+section h1 {
+	font-size:300%;
+	margin-bottom: 30px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	padding: 10px 15px 10px 15px;
+	color: #ffffff;
+	background: #4971A0;
+	background: -moz-linear-gradient(
+		center bottom,
+    	#4971A0 0%,
+    	#6A8EBB 80%,
+    	#6A8EBB 100%
+	);
+	background: -webkit-gradient(
+    	linear,
+    	left 80%,
+    	left top,
+    	color-stop(0, #4971A0),
+    	color-stop(1, #6A8EBB),
+    	color-stop(1, #6A8EBB)
+	);
+}
+
+section h1:before {
+	content: "\00a0";
+	display: block;
+	position: absolute;
+	top: 67px;
+	left: 20px;
+	width: 0;
+	height: 0;
+	border-width: 0;
+	border-right-width: 20px;
+	border-bottom-width: 15px;
+	border-style: solid;
+	border-color: transparent #4971A0;
+}
+
+section h2 {
+	font-size:146.5%;
+	border-radius: 10px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	padding: 10px 15px 10px 15px;
+	background: #efefef;
+	position: relative; 
+}
+
+.title {
+	text-align: right;
+	font-size:93%;
+	margin-top: 15px;
+	margin-bottom: 10px;
+}
