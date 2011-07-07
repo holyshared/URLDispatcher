@@ -7,7 +7,7 @@ v2.0
 * リソース追加機能を追加しました。追加したリソースはイベントハンドラ内から、getResource、getResourcesメソッドを使用して取得できます。
 * preDispatch, invoke, postDispatchメソッドをbeforeDispatch, execute, afterDispatchに変更しました。
 * イベント管理機能を追加しました。
-* ルートの指定方法をaaaのように変更しました。
+* ルートの指定方法をFitzgeraldのように変更しました。
 * イベントハンドラからredirectメソッドで別のURLの処理を実行できるようにしました。
 * イベントハンドラの引数を無くし、変わりにgetArg, getArgs, getParam, getParamsでパラメータを取得できるようにしました。
 

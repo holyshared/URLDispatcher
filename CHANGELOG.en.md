@@ -3,14 +3,14 @@ CHANGE LOG
 
 v2.0
 ------------------------------------------------------------------------
-* プレースホルダーに対応しました。
-* リソース追加機能を追加しました。追加したリソースはイベントハンドラ内から、getResource、getResourcesメソッドを使用して取得できます。
-* preDispatch, invoke, postDispatchメソッドをbeforeDispatch, execute, afterDispatchに変更しました。
-* イベント管理機能を追加しました。
-* ルートの指定方法をaaaのように変更しました。
-* イベントハンドラからredirectメソッドで別のURLの処理を実行できるようにしました。
-* イベントハンドラの引数を無くし、変わりにgetArg, getArgs, getParam, getParamsでパラメータを取得できるようにしました。
+* It corresponded to place holders. 
+* The resource addition function was added. The added resource can be acquired by using getResource and the getResources method in the event handler.
+* PreDispatch, invoke, and the postDispatch method were changed to beforeDispatch, execute, and afterDispatch.
+* The event management function was added.
+* The method of specifying the route was changed like Fitzgerald. 
+* The processing of another URL was able to be executed from the event handler by the redirect method.
+* The argument of the event handler was able to be lost, and to acquire the parameter with getArgs, getParam, and getParams getArg to the change it.
 
 v1.0
 ------------------------------------------------------------------------
-* 初期バージョンをリリースしました。
+* An initial version was released.
