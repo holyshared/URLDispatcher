@@ -70,18 +70,18 @@ URLDispatcher.URLEventDispatcher
 
 
 ### Options
-* resources (array) - List of resource object.
-* routes (object) - List of route object.
-* onStartup - It is generated before the event execution begins.
-* onRoutingStart - It is generated before the retrieval of the route begins.
-* onRoutingEnd - When the retrieval of the route ends, it is generated. 
-* onShutdown - It is generated before the event execution ends.
+* resources (object) - List of resource object.
+* routes (array) - List of route object.
+* onStartup (function) - It is generated before the event execution begins.
+* onRoutingStar (function) - It is generated before the retrieval of the route begins. It hands over in the parameter and url and the execution argument are handed over to the event listener.
+* onRoutingEnd (function) - When the retrieval of the route ends, it is generated. The result of the match is handed over to the event listener.
+* onShutdown (function) - It is generated before the event execution ends.
 
 
 ### Methods
 
 * addRoute (string, object, [array]) - The route is added.
-* addRoutes (object) - Two or more routes are added.
+* addRoutes (array) - Two or more routes are added.
 * removeRoute (string) - The route is deleted. 
 * removeRoutes (string, [string]) - Two or more routes are deleted.
 * dispatch (string, [object]) - The event is executed. 

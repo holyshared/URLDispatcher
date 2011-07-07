@@ -6,6 +6,76 @@
 
 		var testcases = [];
 
+
+		testcases.push({
+			title: 'setOptions',
+			description : 'Test of setOptions',
+			fn: function(){
+
+				var flags = {
+					onStartup: false,
+					onRoutingStart: false,
+					onRoutingEnd: false,
+					onShutdown: false
+				}
+
+				var logger = {};
+
+				var dispatcher = new URLDispatcher.URLEventDispatcher({
+					routes: [
+						{
+							paturn: '^/',
+							handler: function(){
+							}
+						}, {
+							paturn: '^/:name',
+							handler: function(){
+							},
+							conditions: ['\\w+']
+						}, {
+							paturn: '^/:name/:type',
+							handler: function(){
+							},
+							conditions: ['\\w+', '\\w+']
+						}
+					],
+					resources: {
+						'log': logger
+					},
+					onStartup: function(){
+						console.log('onStartup');
+						flags.onStartup = true;
+					},
+					onRoutingStart: function(url, args){
+						console.log('onRoutingStart');
+						flags.onRoutingStart = true;
+					},
+					onRoutingEnd: function(route){
+						console.log('onRoutingEnd');
+						console.log(route);
+						flags.onRoutingEnd = true;
+					},
+					onShutdown: function(){
+						console.log('onShutdown');
+						flags.onShutdown = true;
+					}
+				});
+
+				log ( (dispatcher.hasRoute('^/')) ? 'assert ok' : '^/ is not set.' );
+				log ( (dispatcher.hasRoute('^/:name')) ? 'assert ok' : '^/:name is not set.' );
+				log ( (dispatcher.hasRoute('^/:name/:type')) ? 'assert ok' : '^/:name/:type is not set.' );
+
+				dispatcher.dispatch('/');
+
+				log ( (flags.onStartup) ? 'assert ok' : '[Event - onStartup] It is not executed.' );
+				log ( (flags.onRoutingStart) ? 'assert ok' : '[Event - onRoutingStart] It is not executed.' );
+				log ( (flags.onRoutingEnd) ? 'assert ok' : '[Event - onRoutingEnd] It is not executed.' );
+				log ( (flags.onShutdown) ? 'assert ok' : '[Event - onShutdown] It is not executed.' );
+
+			}
+		});
+
+
 		testcases.push({
 			title: 'addRoute/addRoutes',
 			description : 'addRoute and addRoutes method testcase',
@@ -16,16 +86,17 @@
 				var dispatcher = new URLDispatcher.URLEventDispatcher();
 				dispatcher.addRoute('^/:name', handler, ['\\w+']);
 
-				dispatcher.addRoutes({
-					'^/:name/:type': {
+				dispatcher.addRoutes([{
+						paturn: '^/:name/:type',	
 						handler: handler,
 						conditions: ['\\w+', '\\w+']
 					},
-					'^/:name/:type/:value': {
+					{
+						paturn: '^/:name/:type/:value',
 						handler: handler,
 						conditions: ['\\w+', '\\w+', '\\w+']
 					}	
-				});
+				]);
 
 				log ( (dispatcher.hasRoute('^/:name')) ? 'assert ok' : '^/:name is not set.' );
 				log ( (dispatcher.hasRoute('^/:name/:type')) ? 'assert ok' : '^/:name/:type is not set.' );
@@ -43,16 +114,18 @@
 				var dispatcher = new URLDispatcher.URLEventDispatcher();
 				dispatcher.addRoute('^/:name', handler, ['\\w+']);
 
-				dispatcher.addRoutes({
-					'^/:name/:type': {
+				dispatcher.addRoutes([
+					{
+						paturn: '^/:name/:type',
 						handler: handler,
 						conditions: ['\\w+', '\\w+']
 					},
-					'^/:name/:type/:value': {
+					{
+						paturn: '^/:name/:type/:value',
 						handler: handler,
 						conditions: ['\\w+', '\\w+', '\\w+']
 					}	
-				});
+				]);
 
 				dispatcher.removeRoute('^/:name');
 				log ( (!dispatcher.hasRoute('^/:name')) ? 'assert ok' : '^/:name is set.' );

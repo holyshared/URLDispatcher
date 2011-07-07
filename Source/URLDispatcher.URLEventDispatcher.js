@@ -42,9 +42,9 @@ dispatcher.URLEventDispatcher = new Class({
 	},
 
 	initialize: function(options){
-		this.setOptions(this._prepere(options));
 		this._router = new dispatcher.Router();
 		this._handlers = new dispatcher.HandlerManager();
+		this.setOptions(this._prepere(options));
 	},
 
 	_prepere: function(options){
@@ -67,8 +67,8 @@ dispatcher.URLEventDispatcher = new Class({
 
 	addRoutes: function(routes){
 		var self = this;
-		Object.each(routes, function(route, key){
-			self.addRoute(key, route.handler, route.conditions);
+		routes.each(function(route, key){
+			self.addRoute(route.paturn, route.handler, route.conditions);
 		});
 		return this;
 	},
@@ -96,14 +96,14 @@ dispatcher.URLEventDispatcher = new Class({
 
 		this.fireEvent('startup');
 
-		this.fireEvent('routingStart');
+		this.fireEvent('routingStart', [url, args]);
 
 		var result = this._router.match(url);
 		if (!result) {
 			return false;
 		}
 
-		this.fireEvent('routingEnd');
+		this.fireEvent('routingEnd', [result]);
 
 		var key = result.paturn;
 		var handler = this._handlers.getHandler(key);

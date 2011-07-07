@@ -70,12 +70,12 @@ URLDispatcher.URLEventDispatcher
 
 
 ### Options
-* resources (array) - リーソースオブジェクトのリスト
-* routes (object) - ルートオブジェクトのリスト
-* onStartup - イベント実行を開始する前に発生します。
-* onRoutingStart - ルートの検索を開始する前に発生します。
-* onRoutingEnd - ルートの検索が終了した際に発生します。
-* onShutdown - イベント実行が終了する前に発生します。
+* resources (object) - リーソースオブジェクトのリスト
+* routes (array) - ルートオブジェクトのリスト
+* onStartup (function) - イベント実行を開始する前に発生します。
+* onRoutingStart (function) - ルートの検索を開始する前に発生します。  パラメータにurl、実行引数をイベントリスナーに引き渡します。
+* onRoutingEnd (function) - ルートの検索が終了した際に発生します。 マッチした結果をイベントリスナーに引き渡します。
+* onShutdown (function) - イベント実行が終了する前に発生します。
 
 
 ### Methods
