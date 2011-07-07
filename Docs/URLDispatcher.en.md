@@ -1,13 +1,13 @@
 URLDispatcher
 =======================================
 
-URLDispatcherはURLベースのイベントディスパッチャです。  
-ルーティングは[Fitzgerald](https://github.com/jim/fitzgerald "Fitzgerald")を参考にしています。
+URLDispatcher is an event dispatcher of the URL base.  
+Routing refers to [Fitzgerald](https://github.com/jim/fitzgerald "Fitzgerald"). 
 
 URLDispatcher
 ------------------------------------------------
 
-詳細はURLDispatcher.URLEventDispatcherを見てください。
+Please look at URLDispatcher.URLEventDispatcher about details. 
 
 ### Example
 
@@ -15,7 +15,7 @@ URLDispatcher
 
 ### Properties
 
-* version - バージョン番号
+* version - Version number
 
 
 URLDispatcher.URLEventDispatcher
@@ -70,29 +70,29 @@ URLDispatcher.URLEventDispatcher
 
 
 ### Options
-* resources (array) - リーソースオブジェクトのリスト
-* routes (object) - ルートオブジェクトのリスト
-* onStartup - イベント実行を開始する前に発生します。
-* onRoutingStart - ルートの検索を開始する前に発生します。
-* onRoutingEnd - ルートの検索が終了した際に発生します。
-* onShutdown - イベント実行が終了する前に発生します。
+* resources (array) - List of resource object.
+* routes (object) - List of route object.
+* onStartup - It is generated before the event execution begins.
+* onRoutingStart - It is generated before the retrieval of the route begins.
+* onRoutingEnd - When the retrieval of the route ends, it is generated. 
+* onShutdown - It is generated before the event execution ends.
 
 
 ### Methods
 
-* addRoute (string, object, [array]) - ルートを追加します。
-* addRoutes (object) - ルートを複数追加します。
-* removeRoute (string) - ルートを削除します。
-* removeRoutes (string, [string]) - ルートを複数削除します。
-* dispatch (string, [object]) - イベントを実行します。
-* hasRoute (string) - 該当するルートが存在するか調べます。
-* getLength - ルート数を返します。
+* addRoute (string, object, [array]) - The route is added.
+* addRoutes (object) - Two or more routes are added.
+* removeRoute (string) - The route is deleted. 
+* removeRoutes (string, [string]) - Two or more routes are deleted.
+* dispatch (string, [object]) - The event is executed. 
+* hasRoute (string) - Whether the corresponding route exists is examined.
+* getLength - The number of routes is returned.
 
 
 URLDispatcher.Resource
 ------------------------------------------------
 
-URLDispatcher.Resourceはmixinクラスで、特定のクラスに、リーソース管理の機能を組み込みます。  
+URLDispatcher.Resource builds the function of the Lee source management into a specific class in the mixin class. 
 
 	var myResource = {
 		key1: 'value1',
@@ -105,21 +105,21 @@ URLDispatcher.Resourceはmixinクラスで、特定のクラスに、リーソ�
 
 ### Methods
 
-* addResource (string, object) - リソースを追加します。
-* addResources (object) - リソースを複数追加します。
-* removeResource (string) - リソースを削除します。
-* removeResources (string, [string]) - リソースを複数削除します。
-* hasResource (string) - 該当するリソースが存在するか調べます。
-* getResource (string) - リソースを取得します。
-* getResources (string, [string]) - リソースを複数取得します。
+* addResource (string, object) - The resource is added.
+* addResources (object) - Two or more resources are added. 
+* removeResource (string) - The resource is deleted. 
+* removeResources (string, [string]) - Two or more resources are deleted. 
+* hasResource (string) - Whether the corresponding resource exists is examined. 
+* getResource (string) - The resource is acquired. 
+* getResources (string, [string]) - Two or more resources are acquired. 
 
 
 
 URLDispatcher.Router
 ------------------------------------------------
 
-URLDispatcher.Routerはイベント実行の判断を行います。  
-イベントの実行の判断はスタックされたルートからURLにマッチするものを検出し、マッチした結果を返します。
+URLDispatcher.Router judges the event execution.  
+The judgment of the execution of the event detects the one matched from the stacked route to URL, and returns the result of the match.
 
 	var router = new URLDispatcher.Router();
 	router.addRoute('^/:name', ['\\w+']);
@@ -143,22 +143,22 @@ URLDispatcher.Routerはイベント実行の判断を行います。
 
 ### Methods
 
-* match (string) - 該当するルートを探します。
-* addRoute (string) - ルートを追加します。
-* addRoutes (object) - ルートを複数追加します。
-* removeRoute (string) - ルートを削除します。
-* removeRoutes (object) - ルートを複数削除します。
-* hasRoute (string) - 指定したルートを探します。
-* getRoute (string) - ルートを取得します。
-* getRoutes - ルートを複数取得します。
-* getLength - ルート数を返します。
+* match (string) - It looks for the corresponding route.
+* addRoute (string) - The route is added. 
+* addRoutes (object) - Two or more routes are added.
+* removeRoute (string) - The route is deleted. 
+* removeRoutes (object) - Two or more routes are deleted.
+* hasRoute (string) - It looks for the specified route. 
+* getRoute (string) - The route is acquired. 
+* getRoutes - Two or more routes are acquired. 
+* getLength - The number of routes is returned. 
 
 
 URLDispatcher.Route
 ------------------------------------------------
 
-URLDispatcher.Routeはルーターにスタックするルートオブジェクトです。  
-ディスパッチャはこのオブジェクトで定義された情報を元にイベントを実行するかどうかを判断します。
+URLDispatcher.Route is a stacked route object in the router.  
+The dispatcher judges whether to execute the event based on information defined by this object. 
 
 	var route = new URLDispatcher.Route();
 	route.setPaturn('^/:name')
@@ -171,30 +171,29 @@ URLDispatcher.Routeはルーターにスタックするルートオブジェク�
 
 ### Methods
 
-* match (string) - 指定したURLにマッチするかチェックします。
-* getPaturn - URLパターンを取得します。
-* setPaturn (string) - URLパターンを設定します。
-* getConditions - URLのパラメータパターンを取得します。
-* setConditions (array) - URLのパラメータパターンを設定します。
-* assemble - URLに変換します。
-* isValid - ルートが妥当かチェックします。
+* match (string) - Whether it matches it to specified URL is checked. 
+* getPaturn - The URL pattern is acquired.
+* setPaturn (string) - The URL pattern is set. 
+* getConditions - The parameter pattern of URL is acquired. 
+* setConditions (array) - The parameter pattern of URL is set. 
+* assemble - It converts it into URL.
+* isValid - Whether the route is appropriate is checked.
+
 
 URLDispatcher.Handler
 ------------------------------------------------
 
-URLDispatcher.Handlerはディスパッチャで実行されるイベントハンドラです。
+URLDispatcher.Handler is an event handler executed by the dispatcher. 
 
-イベントハンドラの引数には、functionまたはobjectを指定することができます。  
-オブジェクトの場合はpreDispatch, execute, postDispatchをメソッドを実装することができます。
+Function or object can be specified for the argument of the event handler.  
+PreDispatch, execute, and postDispatch are mounted for the object and the method can be mounted. 
 
-* preDispatch - イベントハンドラを実行する前に実行します。
-* execute - イベントハンドラを実行します。 
-* postDispatch - イベントハンドラを実行した後に実行します。 
+* preDispatch - It executes it before the event handler is executed. 
+* execute - The event handler is executed.
+* postDispatch - After the event handler is executed, it executes it. 
 
-executeメソッドは必ず実装してください。  
-
-また、setContextメソッド利用すると、urlのパラメータとイベントディスパッチャから引き渡される予定の実行引数を指定してイベントハンドラをテストすることが可能です。
-
+Please mount the execute method.  
+Moreover, the event handler can be tested by specifying the execution argument that is scheduled to be handed over by the parameter and the event dispatcher of url when the setContext method is used. 
 
 ### Example
 
@@ -255,25 +254,24 @@ executeメソッドは必ず実装してください。
 
 ### Methods
 
-* setContext (object) - コンテキストを設定します。
-* getContext - コンテキストを取得します。
-* getArg (string) - 実行時の引数を取得します。
-* getArgs - 実行時の引数を複数取得します。
-* getParam (string) - パラメータを取得します。
-* getParams - パラメータを複数取得します。
-* hasResource (string) - リソースが存在するか確認します。
-* getResource (string) - リソースを取得します。
-* getResources - リソースを複数取得します。
-* getDispatcher - イベントディスパッチャーを取得します。
-* setDispatcher (object) - イベントディスパッチャーを設定します。
-* redirect (url, args) - リダイレクトします。
+* setContext (object) - The context is set. 
+* getContext - The context is acquired. 
+* getArg (string) - The argument when executing it is acquired. 
+* getArgs - Two or more arguments when executing it are acquired.
+* getParam (string) - The parameter is acquired. 
+* getParams - Two or more parameters are acquired. 
+* hasResource (string) - Whether the resource exists is confirmed.
+* getResource (string) - The resource is acquired. 
+* getResources - Two or more resources are acquired. 
+* getDispatcher - The event dispatcher is acquired. 
+* setDispatcher (object) - The event dispatcher is set. 
+* redirect (url, args) - It redirects it. 
 
 
 URLDispatcher.HandlerManager
 ------------------------------------------------
 
-URLDispatcher.HandlerManagerはイベントハンドラをURLパターン単位で管理するユーティリティオブジェクトです。  
-
+URLDispatcher.HandlerManager is a utility object that manages the event handler in each URL pattern. 
 
 	var handler1 = new URLDispatcher.Handler(function(context){
 		//do something
@@ -288,11 +286,11 @@ URLDispatcher.HandlerManagerはイベントハンドラをURLパターン単位�
 
 ### Methods
 
-* addHandler (string, function|object) - イベントハンドラを追加します。
-* addHandlers (object) - イベントハンドラを複数追加します。
-* removeHandler (string) - イベントハンドラを削除します。
-* removeHandlers (object) - イベントハンドラを複数削除します。
-* hasHandler (string) - 該当するイベントハンドラが存在するか確認します。
-* getHandler (string) - イベントハンドラを取得します。
-* getHandlers - イベントハンドラを複数取得します。
-* getLength - イベントハンドラの数を取得します。
+* addHandler (string, function|object) - The event handler is added. 
+* addHandlers (object) - Two or more event handlers are added. 
+* removeHandler (string) - The event handler is deleted. 
+* removeHandlers (object) - Two or more event handlers are deleted. 
+* hasHandler (string) - Whether the corresponding event handler exists is confirmed. 
+* getHandler (string) - The event handler is acquired. 
+* getHandlers (string, [string])- Two or more event handlers are acquired. 
+* getLength - The number of event handlers is acquired. 
