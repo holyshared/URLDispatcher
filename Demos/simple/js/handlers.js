@@ -2,8 +2,8 @@
 
 var App = this.Application = {};
 
-App.RootHandler = function(){
-	var content = this.getArg('content');		
+App.RootHandler = function(context){
+	var content = context.getArg('content');		
 	content.appendChild(Builder.h2('url'));
 	content.appendChild(Builder.p(window.location.href));
 };
@@ -12,25 +12,25 @@ App.EventHandler = function(){};
 App.EventHandler.implement({
 
 	beforeDispatch: function(context){
-		var content = this.getArg('content');		
-		var params = this.getParams('type');
-		var values = this.getArgs('content', 'observer');
+		var content = context.getArg('content');		
+		var params = context.getParams('type');
+		var values = context.getArgs('content', 'observer');
 		this._renderTitle('beforeDispatch', content);
 		this._renderContent(content, params, values);
 	},
 
 	execute: function(context){
-		var content = this.getArg('content');		
-		var params = this.getParams('type');
-		var values = this.getArgs('content', 'observer');
+		var content = context.getArg('content');		
+		var params = context.getParams('type');
+		var values = context.getArgs('content', 'observer');
 		this._renderTitle('execute', content);
 		this._renderContent(content, params, values);
 	},
 
 	afterDispatch: function(context){
-		var content = this.getArg('content');		
-		var params = this.getParams('type');
-		var values = this.getArgs('content', 'observer');
+		var content = context.getArg('content');		
+		var params = context.getParams('type');
+		var values = context.getArgs('content', 'observer');
 		this._renderTitle('afterDispatch', content);
 		this._renderContent(content, params, values);
 	},

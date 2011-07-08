@@ -24,16 +24,16 @@ The event handler can specify the function or the object.
 
 	var eventHandler = {
 		//It is executed before invoke is called.
-		beforeDispatch: function(){
+		beforeDispatch: function(context){
 			//do something
 		},
 
-		execute: function(){
+		execute: function(context){
 			//do something
 		},
 
 		//After invoke is called, it is executed. 
-		afterDispatch: function(){
+		afterDispatch: function(context){
 			//do something
 		}
 	};
@@ -52,7 +52,7 @@ and the content that matches to the pattern of URL can be referred to in **the p
 #### javascript
 
 	var dispatcher = new URLDispatcher();
-	dispatcher.addRoute('^/foo/:page', function(){
+	dispatcher.addRoute('^/foo/:page', function(context){
 		var id = this.getArg('id');
 		var page = this.getParam('page');
 		alert(page); //Alert 100

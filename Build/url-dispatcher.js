@@ -25,10 +25,91 @@ var URLDispatcher = this.URLDispatcher = function(){
 };
 
 Object.append(URLDispatcher, {
-	version: '2.0'
+	version: '2.1'
 });
 
 }());
+
+/*
+---
+name: URLDispatcher.Context
+
+description: Context object handed over to event object.
+
+license: MIT-style
+
+authors:
+- Noritaka Horio
+
+requires:
+  - Core/Array
+  - Core/Type
+  - Core/Class
+  - URLDispatcher/URLDispatcher
+
+provides:
+  - URLDispatcher.Context
+
+...
+*/
+
+(function(dispatcher){
+
+var members = ['args', 'params', 'resources'];
+
+dispatcher.Context = new Class({
+
+	_args: null,
+	_params: null,
+	_resources: null,
+
+	initialize: function(props){
+		var self = this;
+		members.each(function(key, index){
+			self['_' + key] = props[key] || {};
+		});
+	},
+
+	getArg: function(name){
+		return this._args[name] || null;
+	},
+
+	getArgs: function(){
+		var args = Array.from(arguments);
+		return args.map(this.getArg, this).associate(args);
+	},
+
+	getParam: function(name){
+		return this._params[name] || null;
+	},
+
+	getParams: function(){
+		var args = Array.from(arguments);
+		return args.map(this.getParam, this).associate(args);
+	},
+
+	hasResource: function(key){
+		return (this._resources[key]) ? true : false;
+	},
+
+	getResource: function(key){
+		if (!this.hasResource(key)){
+			throw new Error('There is no resource ' + key + '.');
+		}
+		return this._resources[key];
+	},
+
+	getResources: function(){
+		var args = Array.from(arguments);
+		return args.map(this.getResource, this).associate(args);
+	}
+
+});
+
+new Type('URLDispatcherContext', dispatcher.Context);
+
+}(URLDispatcher));
+
 
 /*
 ---
@@ -95,6 +176,10 @@ dispatcher.Resource = new Class({
 	getResources: function(){
 		var args = Array.from(arguments);
 		return args.map(this.getResource, this).associate(args);
+	},
+
+	getResourceContainer: function(){
+		return this._resources;
 	}
 
 });
@@ -390,46 +475,11 @@ function setupEventHandler(eventHandler){
 
 dispatcher.Handler = new Class({
 
-	_context: null,
-	_dispatcher: null,
-
 	initialize: function(eventHandler){
 		return setupEventHandler.apply(this, [eventHandler]);
 	},
 
-	setContext: function(context){
-		if (!Type.isObject(context)) {
-			throw new TypeError('The specified value is not object.');
-		}
-		this._context = context;
-		return this;
-	},
-
-	getContext: function(){
-		return this._context;
-	},
-
-	getArg: function(name){
-		var context = this.getContext();
-		return context.args[name] || null;
-	},
-
-	getArgs: function(){
-		var args = Array.from(arguments);
-		return args.map(this.getArg, this).associate(args);
-	},
-
-	getParam: function(name){
-		var context = this.getContext();
-		return context.params[name] || null;
-	},
-
-	getParams: function(){
-		var args = Array.from(arguments);
-		return args.map(this.getParam, this).associate(args);
-	},
-
-	execute: function(){}
+	execute: function(context){}
 
 });
 
@@ -538,6 +588,7 @@ requires:
   - Core/Events
   - Core/Options
   - URLDispatcher/URLDispatcher
+  - URLDispatcher/URLDispatcher.Context
   - URLDispatcher/URLDispatcher.Resource
   - URLDispatcher/URLDispatcher.Router
   - URLDispatcher/URLDispatcher.Handler
@@ -633,14 +684,17 @@ dispatcher.URLEventDispatcher = new Class({
 		var key = result.paturn;
 		var handler = this._handlers.getHandler(key);
 
-		var context = Object.merge(result, { args : args || {} }); 
+		var options = Object.merge(result, {
+			args: args || {},
+			resources: this.getResourceContainer() || {}
+		}); 
 
-		handler.setContext(context);
+		var context = new dispatcher.Context(options);
 
 		//Execute beforeDispatch
 		if (Type.isFunction(handler.beforeDispatch)) {
 			try {
-				handler.beforeDispatch();
+				handler.beforeDispatch(context);
 			} catch(exception) {
 				throw exception;
 			}
@@ -649,7 +703,7 @@ dispatcher.URLEventDispatcher = new Class({
 		//Execute event
 		if (Type.isFunction(handler.execute)) {
 			try {
-				handler.execute();
+				handler.execute(context);
 			} catch(exception) {
 				throw exception;
 			}
@@ -658,7 +712,7 @@ dispatcher.URLEventDispatcher = new Class({
 		//Execute afterDispatch event
 		if (Type.isFunction(handler.afterDispatch)) {
 			try {
-				handler.afterDispatch();
+				handler.afterDispatch(context);
 			} catch(exception) {
 				throw exception;
 			}
@@ -674,6 +728,8 @@ dispatcher.URLEventDispatcher = new Class({
 new Type('URLEventDispatcher', dispatcher.URLEventDispatcher);
 
 dispatcher.Handler.implement({
+
+	_dispatcher: null,
 
 	getDispatcher: function(){
 		return this._dispatcher;
@@ -692,25 +748,7 @@ dispatcher.Handler.implement({
 
 });
 
-dispatcher.Handler.implement({
-
-	hasResource: function(key){
-		return this.getDispatcher().hasResource(key);
-	},
-
-	getResource: function(key){
-		return this.getDispatcher().getResource(key);
-	},
-
-	getResources: function(){
-		var resources = Array.from(arguments);
-		return this.getDispatcher().getResources.apply(this, resources);
-	}
-
-});
-
 dispatcher.implement(new dispatcher.URLEventDispatcher());
-
 
 }(URLDispatcher));
 

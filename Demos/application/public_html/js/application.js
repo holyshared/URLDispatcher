@@ -9,48 +9,42 @@ Flickr.Controller = new Class({
 		var prefix = location.protocol + '//' + location.host;
 		var url = location.href.replace(prefix, '');
 		this.dispatch(url);
-	},
-
-	dispatch: function(){
-		this.dispatcher.dispatch.apply(this.dispatcher, arguments);
 	}
 
 });
 
 Flickr.FlickrController = new Class({
 
+	Extends: URLDispatcher.URLEventDispatcher,
+
 	Implements: [Flickr.Controller],
 
-	initialize: function(container){
+	initialize: function(container, options){
 		this.container = $(container);
-		this.dispatcher = new URLDispatcher();
+		this.parent(options);
 
-		//Add resources
-		this.dispatcher.addResource('request', this.getRequest(this.container));
-
-		//Register routes
-		this.dispatcher.addRoute('^/', this.indexAction)
-			.addRoute('^#:category', this.categoryAction, ['\\w+']);
+		this.addRoute('^/', this.indexAction.bind(this))
+			.addRoute('^#:category', this.categoryAction.bind(this), ['\\w+']);
 	},
 
-	getRequest: function(container){
+	getRequest: function(){
 		var request = new Request.HTML({
 			method: 'get',
-			update: container
+			update: this.container
 		});
 		return request;
 	},
 
-	indexAction: function(){
-		var request = this.getResource('request');
+	indexAction: function(context){
+		var request = this.getRequest();
 		request.setOptions({
 			url: '/category'
 		}).send();
 	},
 
-	categoryAction: function(){
-		var category = this.getParam('category');
-		var request = this.getResource('request');
+	categoryAction: function(context){
+		var category = context.getParam('category');
+		var request = this.getRequest();
 		request.setOptions({
 			url: '/category/' + category
 		}).send();
@@ -68,11 +62,14 @@ Behavior.addGlobalFilter('controller', {
 		var controller = element.getBehaviorResult('FlickrController');
 		if (!controller) {
 			var view = api.get('view'); 
+
 			controller = new Flickr.FlickrController(view);
+
 			api.addEvent('category:select', controller.dispatch.bind(controller));
 			api.onCleanup(function(){
 				delete controller;
 			});
+
 			controller.start();
 		}
 		return controller;
