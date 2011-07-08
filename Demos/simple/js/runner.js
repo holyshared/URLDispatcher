@@ -14,7 +14,7 @@ var Observer = {
 
 var dispatcher = new URLDispatcher();
 dispatcher.addRoute('^/URLDispatcher/$', Application.RootHandler);
-dispatcher.addRoute('^/URLDispatcher/handler/(\\w+)', new Application.EventHandler());
+dispatcher.addRoute('^/URLDispatcher/handler/:type', new Application.EventHandler(), ['\\w+']);
 
 Observer.register(window, 'load', function(){
 
