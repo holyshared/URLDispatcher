@@ -26,8 +26,8 @@ URLDispatcher.URLEventDispatcher
 #### For the function
 
 	var dispatcher = new URLDispatcher.URLEventDispatcher();
-	dispatcher.addRoute('^/:name', function(){
-		var logger = this.getResource('logger');
+	dispatcher.addRoute('^/:name', function(context){
+		var logger = context.getResource('logger');
 		logger.log('logging start.....');
 
 	}, ['\\w+']);
@@ -43,17 +43,17 @@ URLDispatcher.URLEventDispatcher
 #### For the object
 
 	var handler = {
-		preDispatch: function(){
+		beforeDispatch: function(context){
 			//do something
 		},
 
-		execute: function(){
+		execute: function(context){
 			//do something
-			var logger = this.getResource('logger');
+			var logger = context.getResource('logger');
 			logger.log('logging start.....');
 		},
 
-		postDispatch: function(){
+		afterDispatch: function(context){
 			//do something
 		}
 	}
@@ -112,7 +112,7 @@ URLDispatcher.Resourceはmixinクラスで、特定のクラスに、リーソ�
 * hasResource (string) - 該当するリソースが存在するか調べます。
 * getResource (string) - リソースを取得します。
 * getResources (string, [string]) - リソースを複数取得します。
-
+* getResourceContainer - リソースコンテナを返します。
 
 
 URLDispatcher.Router
@@ -193,19 +193,11 @@ URLDispatcher.Handlerはディスパッチャで実行されるイベントハ�
 
 executeメソッドは必ず実装してください。  
 
-また、setContextメソッド利用すると、urlのパラメータとイベントディスパッチャから引き渡される予定の実行引数を指定してイベントハンドラをテストすることが可能です。
-
-
 ### Example
 
 #### For the function
 
-	var eventHandler = new URLDispatcher.Handler(function(){
-		//do something
-		var key1 = this.getArg('key1');
-		var key2 = this.getParam('key2');
-	});
-	eventHandler.setContext({
+	var context = new URLDispatcher.Context({
 		//Dispatch arguments
 		args: {
 			key1: 'some value'
@@ -215,55 +207,53 @@ executeメソッドは必ず実装してください。
 			key2: 'some value'
 		}
 	});
-	eventHandler.execute();
+
+	var eventHandler = new URLDispatcher.Handler(function(context){
+		//do something
+		var key1 = context.getArg('key1');
+		var key2 = context.getParam('key2');
+	});
+	eventHandler.execute(context);
 
 #### For the object
 
+	var context = new URLDispatcher.Context({
+		//Dispatch arguments
+		args: {
+			key1: 'some value'
+		},
+		//URL paramters
+		params: {
+			key2: 'some value'
+		}
+	});
+
 	var handler = {
-		preDispatch: function(){
+		preDispatch: function(context){
 			//do something
-			var key1 = this.getArg('key1');
-			var key2 = this.getParam('key2');
+			var key1 = context.getArg('key1');
+			var key2 = context.getParam('key2');
 		},
 
-		execute: function(){
+		execute: function(context){
 			//do something
-			var key1 = this.getArg('key1');
-			var key2 = this.getParam('key2');
+			var key1 = context.getArg('key1');
+			var key2 = context.getParam('key2');
 		},
 
-		postDispatch: function(){
+		postDispatch: function(context){
 			//do something
-			var key1 = this.getArg('key1');
-			var key2 = this.getParam('key2');
+			var key1 = context.getArg('key1');
+			var key2 = context.getParam('key2');
 		}
 	}
 
 	var eventHandler = new URLDispatcher.Handler(handler);
-	eventHandler.setContext({
-		//Dispatch arguments
-		args: {
-			key1: 'some value'
-		},
-		//URL paramters
-		params: {
-			key2: 'some value'
-		}
-	});
-	eventHandler.execute();
+	eventHandler.execute(context);
 
 
 ### Methods
 
-* setContext (object) - コンテキストを設定します。
-* getContext - コンテキストを取得します。
-* getArg (string) - 実行時の引数を取得します。
-* getArgs - 実行時の引数を複数取得します。
-* getParam (string) - パラメータを取得します。
-* getParams - パラメータを複数取得します。
-* hasResource (string) - リソースが存在するか確認します。
-* getResource (string) - リソースを取得します。
-* getResources - リソースを複数取得します。
 * getDispatcher - イベントディスパッチャーを取得します。
 * setDispatcher (object) - イベントディスパッチャーを設定します。
 * redirect (url, args) - リダイレクトします。

@@ -26,8 +26,8 @@ URLDispatcher.URLEventDispatcher
 #### For the function
 
 	var dispatcher = new URLDispatcher.URLEventDispatcher();
-	dispatcher.addRoute('^/:name', function(){
-		var logger = this.getResource('logger');
+	dispatcher.addRoute('^/:name', function(context){
+		var logger = context.getResource('logger');
 		logger.log('logging start.....');
 
 	}, ['\\w+']);
@@ -43,17 +43,17 @@ URLDispatcher.URLEventDispatcher
 #### For the object
 
 	var handler = {
-		preDispatch: function(){
+		beforeDispatch: function(context){
 			//do something
 		},
 
-		execute: function(){
+		execute: function(context){
 			//do something
-			var logger = this.getResource('logger');
+			var logger = context.getResource('logger');
 			logger.log('logging start.....');
 		},
 
-		postDispatch: function(){
+		afterDispatch: function(context){
 			//do something
 		}
 	}
@@ -112,7 +112,7 @@ URLDispatcher.Resource builds the function of the Lee source management into a s
 * hasResource (string) - Whether the corresponding resource exists is examined. 
 * getResource (string) - The resource is acquired. 
 * getResources (string, [string]) - Two or more resources are acquired. 
-
+* getResourceContainer - The resource container is returned.
 
 
 URLDispatcher.Router
@@ -193,18 +193,12 @@ PreDispatch, execute, and postDispatch are mounted for the object and the method
 * postDispatch - After the event handler is executed, it executes it. 
 
 Please mount the execute method.  
-Moreover, the event handler can be tested by specifying the execution argument that is scheduled to be handed over by the parameter and the event dispatcher of url when the setContext method is used. 
 
 ### Example
 
 #### For the function
 
-	var eventHandler = new URLDispatcher.Handler(function(){
-		//do something
-		var key1 = this.getArg('key1');
-		var key2 = this.getParam('key2');
-	});
-	eventHandler.setContext({
+	var context = new URLDispatcher.Context({
 		//Dispatch arguments
 		args: {
 			key1: 'some value'
@@ -214,55 +208,53 @@ Moreover, the event handler can be tested by specifying the execution argument t
 			key2: 'some value'
 		}
 	});
-	eventHandler.execute();
+
+	var eventHandler = new URLDispatcher.Handler(function(context){
+		//do something
+		var key1 = context.getArg('key1');
+		var key2 = context.getParam('key2');
+	});
+	eventHandler.execute(context);
 
 #### For the object
 
+	var context = new URLDispatcher.Context({
+		//Dispatch arguments
+		args: {
+			key1: 'some value'
+		},
+		//URL paramters
+		params: {
+			key2: 'some value'
+		}
+	});
+
 	var handler = {
-		preDispatch: function(){
+		preDispatch: function(context){
 			//do something
-			var key1 = this.getArg('key1');
-			var key2 = this.getParam('key2');
+			var key1 = context.getArg('key1');
+			var key2 = context.getParam('key2');
 		},
 
-		execute: function(){
+		execute: function(context){
 			//do something
-			var key1 = this.getArg('key1');
-			var key2 = this.getParam('key2');
+			var key1 = context.getArg('key1');
+			var key2 = context.getParam('key2');
 		},
 
-		postDispatch: function(){
+		postDispatch: function(context){
 			//do something
-			var key1 = this.getArg('key1');
-			var key2 = this.getParam('key2');
+			var key1 = context.getArg('key1');
+			var key2 = context.getParam('key2');
 		}
 	}
 
 	var eventHandler = new URLDispatcher.Handler(handler);
-	eventHandler.setContext({
-		//Dispatch arguments
-		args: {
-			key1: 'some value'
-		},
-		//URL paramters
-		params: {
-			key2: 'some value'
-		}
-	});
-	eventHandler.execute();
+	eventHandler.execute(context);
 
 
 ### Methods
 
-* setContext (object) - The context is set. 
-* getContext - The context is acquired. 
-* getArg (string) - The argument when executing it is acquired. 
-* getArgs - Two or more arguments when executing it are acquired.
-* getParam (string) - The parameter is acquired. 
-* getParams - Two or more parameters are acquired. 
-* hasResource (string) - Whether the resource exists is confirmed.
-* getResource (string) - The resource is acquired. 
-* getResources - Two or more resources are acquired. 
 * getDispatcher - The event dispatcher is acquired. 
 * setDispatcher (object) - The event dispatcher is set. 
 * redirect (url, args) - It redirects it. 
