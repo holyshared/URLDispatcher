@@ -2,7 +2,7 @@ URLDispatcher
 ====================================
 
 This library is an event dispatcher with a light URL base.  
-The size of the file is 2KB very lighter.
+The size of the file is 8KB very lighter.
 
 ![URLDispatcher](http://holyshared.github.com/URLDispatcher/icon.png "URLDispatcher")
 
@@ -16,7 +16,7 @@ The event handler can specify the function or the object.
 
 #### javascript
 	var dispatcher = new URLDispatcher();
-	dispatcher.register('^/foo/$', function(context){
+	dispatcher.addRoute('^/foo/$', function(){
 		//do something
 	});
 
@@ -24,22 +24,22 @@ The event handler can specify the function or the object.
 
 	var eventHandler = {
 		//It is executed before invoke is called.
-		preDispatch: function(context){
+		beforeDispatch: function(){
 			//do something
 		},
 
-		invoke: function(context){
+		execute: function(){
 			//do something
 		},
 
 		//After invoke is called, it is executed. 
-		preDispatch: function(context){
+		afterDispatch: function(){
 			//do something
 		}
 	};
 
 	var dispatcher = new URLDispatcher();
-	dispatcher.register('^/foo/$', eventHandler);
+	dispatcher.addRoute('^/foo/$', eventHandler);
 
 ### 2. The event is executed.
 
@@ -52,10 +52,12 @@ and the content that matches to the pattern of URL can be referred to in **the p
 #### javascript
 
 	var dispatcher = new URLDispatcher();
-	dispatcher.register('^/foo/(\\d+)', function(context){
-		alert(context.params[0]); //Alert 100
-		alert(context.values.id); //Alert eventDispatcher
-	});
+	dispatcher.addRoute('^/foo/:page', function(){
+		var id = this.getArg('id');
+		var page = this.getParam('page');
+		alert(page); //Alert 100
+		alert(id); //Alert eventDispatcher
+	}, ['\\d+']);
 
 	dispatcher.dispatch('/foo/100', {
 		id: 'eventDispatcher'
@@ -65,7 +67,7 @@ Required libraries
 ------------------------------------------------------------------------
 
 ### Mootools Core
-http://mootools.net/core/79d0771b1f1699ecba505c52ebbcc562
+http://mootools.net/core/a2c956ca31acc228a3d0294f4b035d9a
 
 Building URLDispatcher
 ------------------------------------------------------------------------
