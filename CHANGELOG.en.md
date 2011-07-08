@@ -1,6 +1,12 @@
 CHANGE LOG
 ====================================
 
+v2.1
+------------------------------------------------------------------------
+* The context object was passed to the argument of the event handler.
+* getArg, getArgs, getParam, getParams, and getResource and getResources were not able to be executed in the event handler.
+* The getResourceContainer method was mounted. 
+
 v2.0
 ------------------------------------------------------------------------
 * It corresponded to place holders. 

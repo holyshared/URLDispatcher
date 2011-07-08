@@ -16,7 +16,7 @@ The event handler can specify the function or the object.
 
 #### javascript
 	var dispatcher = new URLDispatcher();
-	dispatcher.addRoute('^/foo/$', function(){
+	dispatcher.addRoute('^/foo/$', function(context){
 		//do something
 	});
 
