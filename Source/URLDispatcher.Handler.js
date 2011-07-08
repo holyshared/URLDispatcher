@@ -38,46 +38,11 @@ function setupEventHandler(eventHandler){
 
 dispatcher.Handler = new Class({
 
-	_context: null,
-	_dispatcher: null,
-
 	initialize: function(eventHandler){
 		return setupEventHandler.apply(this, [eventHandler]);
 	},
 
-	setContext: function(context){
-		if (!Type.isObject(context)) {
-			throw new TypeError('The specified value is not object.');
-		}
-		this._context = context;
-		return this;
-	},
-
-	getContext: function(){
-		return this._context;
-	},
-
-	getArg: function(name){
-		var context = this.getContext();
-		return context.args[name] || null;
-	},
-
-	getArgs: function(){
-		var args = Array.from(arguments);
-		return args.map(this.getArg, this).associate(args);
-	},
-
-	getParam: function(name){
-		var context = this.getContext();
-		return context.params[name] || null;
-	},
-
-	getParams: function(){
-		var args = Array.from(arguments);
-		return args.map(this.getParam, this).associate(args);
-	},
-
-	execute: function(){}
+	execute: function(context){}
 
 });
 

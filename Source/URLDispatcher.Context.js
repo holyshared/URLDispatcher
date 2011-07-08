@@ -2,7 +2,7 @@
 ---
 name: URLDispatcher.Context
 
-description: aa.
+description: Context object handed over to event object.
 
 license: MIT-style
 

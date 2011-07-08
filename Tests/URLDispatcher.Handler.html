@@ -1,0 +1,88 @@
+<script type="text/javascript" src="/depender/build?require=Element.Event,URLDispatcher/URLDispatcher.Handler,URLDispatcher/URLDispatcher.Context"></script>
+<script type="text/javascript">
+(function(doc){
+
+	window.addEventListener('load', function(){
+
+		var testcases = [];
+
+		testcases.push({
+			title: 'Function paturn',
+			description : 'Function paturn testcase',
+			fn: function(){
+				var args = { 'key1': 100 };
+				var params = { 'key2': 200 };
+				var logger = {
+					echo: function(message){
+						return message;
+					}
+				};
+				var resources = {
+					logger: logger
+				};
+				var context = new URLDispatcher.Context({
+					args: args,
+					params: params,
+					resources: resources
+				});
+
+				var handler = new URLDispatcher.Handler(function(context){
+					log ( (context.getArg('key1') == 100) ? 'assert ok' : 'Function paturn - invalid arguments.' );
+					log ( (context.getParam('key2') == 200) ? 'assert ok' : 'Function paturn - invalid params.' );
+
+					var debug = context.getResource('logger');
+
+					log ( (debug.echo('foo') == 'foo') ? 'assert ok' : 'Function paturn - invalid resource.' );
+				});
+
+				handler.execute(context);
+			}
+		});
+
+		testcases.push({
+			title: 'Object paturn',
+			description : 'Object paturn testcase',
+			fn: function(){
+				var args = { 'key1': 100 };
+				var params = { 'key2': 200 };
+				var logger = {
+					echo: function(message){
+						return message;
+					}
+				};
+				var resources = {
+					logger: logger
+				};
+				var context = new URLDispatcher.Context({
+					args: args,
+					params: params,
+					resources: resources
+				});
+
+				var handler = new URLDispatcher.Handler({
+
+					execute: function(context){
+						log ( (context.getArg('key1') == 100) ? 'assert ok' : 'Function paturn - invalid arguments.' );
+						log ( (context.getParam('key2') == 200) ? 'assert ok' : 'Function paturn - invalid params.' );
+	
+						var debug = context.getResource('logger');
+	
+						log ( (debug.echo('foo') == 'foo') ? 'assert ok' : 'Function paturn - invalid resource.' );
+					}
+
+				});
+
+				handler.execute(context);
+			}
+		});
+
+		makeActions(testcases);
+
+		testcases.each(function(testcase, key){
+			$('test-' + key.toString()).fireEvent('click');
+		});
+
+	}, false);
+
+}(document));
+</script>
