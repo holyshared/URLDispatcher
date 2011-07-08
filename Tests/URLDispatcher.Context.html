@@ -1,0 +1,91 @@
+<script type="text/javascript" src="/depender/build?require=Element.Event,URLDispatcher/URLDispatcher.Context"></script>
+<script type="text/javascript">
+(function(doc){
+
+	window.addEventListener('load', function(){
+
+		var testcases = [];
+
+		testcases.push({
+			title: 'getArg/getArgs',
+			description : 'getArg and getArgs method testcase',
+			fn: function(){
+
+				var context = new URLDispatcher.Context({
+					args: {
+						'key1': 100,
+						'key2': 200
+					}
+				});
+
+				var testValue = context.getArg('key1');
+				log ( (testValue == 100) ? 'assert ok' : 'There is a problem in getArg.' );
+
+				var testValues = context.getArgs('key1', 'key2');
+				log ( (testValues.key1 == 100) ? 'assert ok' : 'There is a problem in getArgs.' );
+				log ( (testValues.key2 == 200) ? 'assert ok' : 'There is a problem in getArgs.' );
+
+			}
+		});
+
+		testcases.push({
+			title: 'getParam/getParams',
+			description : 'getParam and getParams method testcase',
+			fn: function(){
+
+				var context = new URLDispatcher.Context({
+					params: {
+						'key1': 100,
+						'key2': 200
+					}
+				});
+
+				var testValue = context.getParam('key1');
+				log ( (testValue == 100) ? 'assert ok' : 'There is a problem in getParam.' );
+
+				var testValues = context.getParams('key1', 'key2');
+				log ( (testValues.key1 == 100) ? 'assert ok' : 'There is a problem in getParams.' );
+				log ( (testValues.key2 == 200) ? 'assert ok' : 'There is a problem in getParams.' );
+
+			}
+		});
+
+		testcases.push({
+			title: 'hasResource/getResource/getResources',
+			description : 'hasResource and getResource and getResources method testcase',
+			fn: function(){
+				var r1 = {};
+				var r2 = {};
+				var context = new URLDispatcher.Context({
+					resources: {
+						'key1': r1,
+						'key2': r2
+					}
+				});
+
+				var testValue = context.getResource('key1');
+				log ( (testValue == r1) ? 'assert ok' : 'There is a problem in getResource.' );
+
+				var testValues = context.getResources('key1', 'key2');
+				log ( (testValues.key1 == r1) ? 'assert ok' : 'There is a problem in getResources.' );
+				log ( (testValues.key2 == r2) ? 'assert ok' : 'There is a problem in getResources.' );
+
+				try {
+					var value = context.getResource('key3');
+					log('There is no resource.');
+				} catch(e) {
+					log('assert ok');
+				}
+			}
+		});
+
+		makeActions(testcases);
+
+		testcases.each(function(testcase, key){
+			$('test-' + key.toString()).fireEvent('click');
+		});
+
+	}, false);
+
+}(document));
+</script>
