@@ -2,50 +2,50 @@
 
 var App = this.Application = {};
 
-App.RootHandler = function(context){
-	var values = context.values;
-	var content = values.content;
-
+App.RootHandler = function(){
+	var content = this.getArg('content');		
 	content.appendChild(Builder.h2('url'));
-	content.appendChild(Builder.p(context.url));
+	content.appendChild(Builder.p(window.location.href));
 };
 
 App.EventHandler = function(){};
 App.EventHandler.implement({
 
-	preDispatch: function(context){
-		this._renderTitle('preDispatch', context);
-		this._renderContent(context);
+	beforeDispatch: function(context){
+		var content = this.getArg('content');		
+		var params = this.getParams('type');
+		var values = this.getArgs('content', 'observer');
+		this._renderTitle('beforeDispatch', content);
+		this._renderContent(content, params, values);
 	},
 
-	invoke: function(context){
-		this._renderTitle('invoke', context);
-		this._renderContent(context);
+	execute: function(context){
+		var content = this.getArg('content');		
+		var params = this.getParams('type');
+		var values = this.getArgs('content', 'observer');
+		this._renderTitle('execute', content);
+		this._renderContent(content, params, values);
 	},
 
-	postDispatch: function(context){
-		this._renderTitle('postDispatch', context);
-		this._renderContent(context);
+	afterDispatch: function(context){
+		var content = this.getArg('content');		
+		var params = this.getParams('type');
+		var values = this.getArgs('content', 'observer');
+		this._renderTitle('afterDispatch', content);
+		this._renderContent(content, params, values);
 	},
 
-	_renderTitle: function(title, context){
-		var values = context.values;
-		var content = values.content;
+	_renderTitle: function(title, content){
 		content.appendChild(Builder.h2(title));
 	}.protect(),
 
-	_renderContent: function(context){
-
-		var params = context.params;
-		var values = context.values;
-		var content = values.content;
-
+	_renderContent: function(content, params, values){
 		content.appendChild(Builder.h3('url'));
-		content.appendChild(Builder.p(context.url));
+		content.appendChild(Builder.p(window.location.href));
 
-		if (Type.isArray(params)){
+		if (params){
 			content.appendChild(Builder.h3('params'));
-			content.appendChild(buildUlList(params));
+			content.appendChild(buildDlList(params));
 		}
 
 		if (values){

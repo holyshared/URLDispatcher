@@ -13,8 +13,8 @@ var Observer = {
 };
 
 var dispatcher = new URLDispatcher();
-dispatcher.register('^/URLDispatcher/$', Application.RootHandler);
-dispatcher.register('^/URLDispatcher/handler/(\\w+)', new Application.EventHandler());
+dispatcher.addRoute('^/URLDispatcher/$', Application.RootHandler);
+dispatcher.addRoute('^/URLDispatcher/handler/:type', new Application.EventHandler(), ['\\w+']);
 
 Observer.register(window, 'load', function(){
 
