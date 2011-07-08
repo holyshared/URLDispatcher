@@ -5,7 +5,7 @@
 		<meta name="keywords" content="" />
 		<meta name="description" content="" />
 		<title>URLDispatcher</title>
-		<link rel="stylesheet" type="text/css" href="css/styles.css" media="screen,print" />
+		<link rel="stylesheet" type="text/css" href="css/style.css" media="screen,print" />
 		<script src="js/lib/mootools-core-1.3.2.js"></script>
 		<script src="js/lib/mootools-more-1.3.2.1.js"></script>
 		<script src="js/lib/clientcide.js"></script>
@@ -16,7 +16,7 @@
 	<body>
 		<article class="page gs960">
 			<header>
-				<h1 class="title"><a href="/">aa</a></h1>
+				<h1 class="title"><a href="/">URLDispatcher Demo Application</a></h1>
 			</header>
 
 			<section>
