@@ -2,7 +2,7 @@
 ---
 name: URLDispatcher.Resource
 
-description: 
+description: Mixin class of resource management function.
 
 license: MIT-style
 

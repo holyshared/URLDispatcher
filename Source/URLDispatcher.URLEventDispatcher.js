@@ -2,7 +2,7 @@
 ---
 name: URLDispatcher.URLEventDispatcher
 
-description: 
+description: Event dispatcher of URL base.
 
 license: MIT-style
 

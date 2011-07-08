@@ -2,7 +2,7 @@
 ---
 name: URLDispatcher.Route
 
-description: 
+description: Route class of url base.
 
 license: MIT-style
 

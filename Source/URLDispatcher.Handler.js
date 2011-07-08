@@ -2,7 +2,7 @@
 ---
 name: URLDispatcher.Handler
 
-description: 
+description: Event handler class.
 
 license: MIT-style
 

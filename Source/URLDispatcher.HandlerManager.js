@@ -2,7 +2,7 @@
 ---
 name: URLDispatcher.HandlerManager
 
-description: 
+description: Collection class that manages event handler.
 
 license: MIT-style
 

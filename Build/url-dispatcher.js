@@ -2,7 +2,7 @@
 ---
 name: URLDispatcher
 
-description: 
+description: Core source of urldispatcher.
 
 license: MIT-style
 
@@ -34,7 +34,7 @@ Object.append(URLDispatcher, {
 ---
 name: URLDispatcher.Resource
 
-description: 
+description: Mixin class of resource management function.
 
 license: MIT-style
 
@@ -105,7 +105,7 @@ dispatcher.Resource = new Class({
 ---
 name: URLDispatcher.Route
 
-description: 
+description: Route class of url base.
 
 license: MIT-style
 
@@ -253,7 +253,7 @@ new Type('URLDispatcherRoute', dispatcher.Route);
 ---
 name: URLDispatcher.Router
 
-description: 
+description: Routing class that judges route.
 
 license: MIT-style
 
@@ -354,7 +354,7 @@ dispatcher.Router = new Class({
 ---
 name: URLDispatcher.Handler
 
-description: 
+description: Event handler class.
 
 license: MIT-style
 
@@ -442,7 +442,7 @@ new Type('URLDispatcherHandler', dispatcher.Handler);
 ---
 name: URLDispatcher.HandlerManager
 
-description: 
+description: Collection class that manages event handler.
 
 license: MIT-style
 
@@ -527,7 +527,7 @@ dispatcher.HandlerManager = new Class({
 ---
 name: URLDispatcher.URLEventDispatcher
 
-description: 
+description: Event dispatcher of URL base.
 
 license: MIT-style
 

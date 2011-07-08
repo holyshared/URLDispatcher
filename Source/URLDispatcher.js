@@ -2,7 +2,7 @@
 ---
 name: URLDispatcher
 
-description: 
+description: Core source of urldispatcher.
 
 license: MIT-style
 

@@ -2,7 +2,7 @@
 ---
 name: URLDispatcher.Router
 
-description: 
+description: Routing class that judges route.
 
 license: MIT-style
 
