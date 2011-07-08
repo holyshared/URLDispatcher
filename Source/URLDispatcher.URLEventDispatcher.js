@@ -13,6 +13,7 @@ requires:
   - Core/Events
   - Core/Options
   - URLDispatcher/URLDispatcher
+  - URLDispatcher/URLDispatcher.Context
   - URLDispatcher/URLDispatcher.Resource
   - URLDispatcher/URLDispatcher.Router
   - URLDispatcher/URLDispatcher.Handler
@@ -108,14 +109,17 @@ dispatcher.URLEventDispatcher = new Class({
 		var key = result.paturn;
 		var handler = this._handlers.getHandler(key);
 
-		var context = Object.merge(result, { args : args || {} }); 
+		var options = Object.merge(result, {
+			args: args || {},
+			resources: this.getResourceContainer() || {}
+		}); 
 
-		handler.setContext(context);
+		var context = new dispatcher.Context(options);
 
 		//Execute beforeDispatch
 		if (Type.isFunction(handler.beforeDispatch)) {
 			try {
-				handler.beforeDispatch();
+				handler.beforeDispatch(context);
 			} catch(exception) {
 				throw exception;
 			}
@@ -124,7 +128,7 @@ dispatcher.URLEventDispatcher = new Class({
 		//Execute event
 		if (Type.isFunction(handler.execute)) {
 			try {
-				handler.execute();
+				handler.execute(context);
 			} catch(exception) {
 				throw exception;
 			}
@@ -133,7 +137,7 @@ dispatcher.URLEventDispatcher = new Class({
 		//Execute afterDispatch event
 		if (Type.isFunction(handler.afterDispatch)) {
 			try {
-				handler.afterDispatch();
+				handler.afterDispatch(context);
 			} catch(exception) {
 				throw exception;
 			}
@@ -149,6 +153,8 @@ dispatcher.URLEventDispatcher = new Class({
 new Type('URLEventDispatcher', dispatcher.URLEventDispatcher);
 
 dispatcher.Handler.implement({
+
+	_dispatcher: null,
 
 	getDispatcher: function(){
 		return this._dispatcher;
@@ -167,24 +173,6 @@ dispatcher.Handler.implement({
 
 });
 
-dispatcher.Handler.implement({
-
-	hasResource: function(key){
-		return this.getDispatcher().hasResource(key);
-	},
-
-	getResource: function(key){
-		return this.getDispatcher().getResource(key);
-	},
-
-	getResources: function(){
-		var resources = Array.from(arguments);
-		return this.getDispatcher().getResources.apply(this, resources);
-	}
-
-});
-
 dispatcher.implement(new dispatcher.URLEventDispatcher());
-
 
 }(URLDispatcher));

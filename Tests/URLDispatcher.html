@@ -4,17 +4,17 @@
 
 	window.addEventListener('load', function(){
 
-		var h1 = function(){
-			var name = this.getParam('name');
-			var args1 = this.getArg('args1');
+		var h1 = function(context){
+			var name = context.getParam('name');
+			var args1 = context.getArg('args1');
 			log( (name == 'holyshared') ? 'assert ok' : 'name is invalid' );
 			log( (args1 == 100) ? 'assert ok' : 'args1 is invalid' );
 		};
 
-		var eventHandler = function(){
-			var name = this.getParam('name');
-			var status = this.getParam('status');
-			var args1 = this.getArg('args1');
+		var eventHandler = function(context){
+			var name = context.getParam('name');
+			var status = context.getParam('status');
+			var args1 = context.getArg('args1');
 			log( (name == 'holyshared') ? 'assert ok' : 'name is invalid' );
 			log( (status == 'sleep') ? 'assert ok' : 'status is invalid' );
 			log( (args1 == 500) ? 'assert ok' : 'args1 is invalid' );

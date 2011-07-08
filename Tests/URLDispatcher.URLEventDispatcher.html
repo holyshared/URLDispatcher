@@ -80,7 +80,7 @@
 			title: 'addRoute/addRoutes',
 			description : 'addRoute and addRoutes method testcase',
 			fn: function(){
-				var handler = new URLDispatcher.Handler(function(){
+				var handler = new URLDispatcher.Handler(function(context){
 				});
 
 				var dispatcher = new URLDispatcher.URLEventDispatcher();
@@ -108,7 +108,7 @@
 			title: 'removeRoute/removeRoutes',
 			description : 'removeRoute and removeRoutes method testcase',
 			fn: function(){
-				var handler = new URLDispatcher.Handler(function(){
+				var handler = new URLDispatcher.Handler(function(context){
 				});
 
 				var dispatcher = new URLDispatcher.URLEventDispatcher();
@@ -141,11 +141,11 @@
 			title: 'dispatch',
 			description : 'dispatch method testcase',
 			fn: function(){
-				var h1 = new URLDispatcher.Handler(function(){
-					var value = this.getArg('key1');
+				var h1 = new URLDispatcher.Handler(function(context){
+					var value = context.getArg('key1');
 					log ( (value == 'value1') ? 'assert ok' : '{h1} The [key1] is invalid.' );
 
-					var value = this.getParam('name');
+					var value = context.getParam('name');
 					log ( (value == 'foo') ? 'assert ok' : 'The params is invalid.' );
 
 					this.redirect('/foo/mootools', {
@@ -153,11 +153,11 @@
 					});
 				});
 
-				var h2 = new URLDispatcher.Handler(function(){
-					var value = this.getArg('key1');
+				var h2 = new URLDispatcher.Handler(function(context){
+					var value = context.getArg('key1');
 					log ( (value == 'value1') ? 'assert ok' : '{h2} The [key1] is invalid.' );
 
-					var values = this.getParams('name', 'type');
+					var values = context.getParams('name', 'type');
 					log ( (values.name == 'foo') ? 'assert ok' : 'The [name] is invalid.' );
 					log ( (values.type == 'mootools') ? 'assert ok' : 'The [type] is invalid.' );
 				});
@@ -177,8 +177,10 @@
 			title: 'getResource/getResources',
 			description : 'getResource and getResources method testcase',
 			fn: function(){
-				var h1 = new URLDispatcher.Handler(function(){
-					var log = this.getResources('log');
+				var h1 = new URLDispatcher.Handler(function(context){
+
+console.log(context);
+					var log = context.getResources('log');
 					if (log.log) {
 						var logger = log.log;
 						logger.log( 'assert ok' );
@@ -206,8 +208,8 @@
 			title: 'beforeDispath/execute/afterDispath',
 			description : 'beforeDispath, execute, afterDispath event testcase',
 			fn: function(){
-				var eventHandler = function(){
-					var name = this.getParam('name');
+				var eventHandler = function(context){
+					var name = context.getParam('name');
 					log ( (name == 'foo') ? 'assert ok' : 'The [name] is invalid.' );
 				};
 

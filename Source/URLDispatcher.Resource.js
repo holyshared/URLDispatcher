@@ -63,6 +63,10 @@ dispatcher.Resource = new Class({
 	getResources: function(){
 		var args = Array.from(arguments);
 		return args.map(this.getResource, this).associate(args);
+	},
+
+	getResourceContainer: function(){
+		return this._resources;
 	}
 
 });
