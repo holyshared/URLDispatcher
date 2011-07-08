@@ -53,10 +53,13 @@ and the content that matches to the pattern of URL can be referred to in **the p
 
 	var dispatcher = new URLDispatcher();
 	dispatcher.addRoute('^/foo/:page', function(context){
-		var id = this.getArg('id');
-		var page = this.getParam('page');
+
+		var id = context.getArg('id');
+		var page = context.getParam('page');
+
 		alert(page); //Alert 100
 		alert(id); //Alert eventDispatcher
+
 	}, ['\\d+']);
 
 	dispatcher.dispatch('/foo/100', {
